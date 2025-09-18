@@ -1,21 +1,19 @@
-# CEN3031 Group Project:
+# ClosetIQ
+
+Group project for CEN3031 Introduction to Software Engineering
 
 Commands used to set up React project with Vite:
 
-<code>
-npm create vite@latest ar-tryon -- --template react
-cd ar-tryon
-npm install three @react-three/fiber
+```
+npm create vite@latest my_project -- --template react
+cd my_project
+npm install
 npm run dev
-</code>
+```
 
-Create the website with React and run/host it with Vite 
+You must create a project first to get the 'node_modules/' folder in order for Vite to work and run the app
+
 **Node.js must be installed on system as a prerequisite**
-
-
-<hr>
-
-Here is some stuff that was written in the README when the project was made:
 
 # React + Vite
 
