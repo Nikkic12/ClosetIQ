@@ -2,16 +2,15 @@
 
 Group project for CEN3031 Introduction to Software Engineering
 
-Commands used to set up React project with Vite:
+Commands used to run React project with Vite after cloning repo:
 
 ```
-npm create vite@latest my_project -- --template react
-cd my_project
 npm install
+npm install @mui/material @emotion/react @emotion/styled
 npm run dev
 ```
 
-You must create a project first to get the 'node_modules/' folder in order for Vite to work and run the app
+You must run <code>npm install</code> after cloning the repo to get the <code>node_modules/</code> folder in order for Vite to work and run the app
 
 **Node.js must be installed on system as a prerequisite**
 
