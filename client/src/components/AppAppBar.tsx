@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
+import ColorModeIconDropdown from '../themes/ColorModeIconDropdown';
 import Sitemark from './SitemarkIcon';
 import { Link } from 'react-router-dom';
 
@@ -69,10 +69,10 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button component={Link} to="/login" color="primary" variant="text" size="small">
+            <Button component={Link} to="/signin" color="primary" variant="text" size="small">
               Sign in
             </Button>
-            <Button component={Link} to="/login" color="primary" variant="contained" size="small">
+            <Button component={Link} to="/signup" color="primary" variant="contained" size="small">
               Sign up
             </Button>
             <ColorModeIconDropdown />
@@ -115,13 +115,13 @@ export default function AppAppBar() {
                 </MenuItem>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>
-                  <Button component={Link} to="/login" color="primary" variant="contained" fullWidth>
-                    Sign up
+                  <Button component={Link} to="/signin" color="primary" variant="outlined" fullWidth>
+                    Sign in
                   </Button>
                 </MenuItem>
                 <MenuItem>
-                  <Button component={Link} to="/login" color="primary" variant="outlined" fullWidth>
-                    Sign in
+                  <Button component={Link} to="/signup" color="primary" variant="contained" fullWidth>
+                    Sign up
                   </Button>
                 </MenuItem>
               </Box>
