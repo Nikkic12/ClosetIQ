@@ -10,6 +10,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/X';
 import SitemarkIcon from './SitemarkIcon';
@@ -196,12 +197,21 @@ export default function Footer() {
             <IconButton
               color="inherit"
               size="small"
-              href="https://github.com/mui"
+              href="https://github.com/Nikkic12/ClosetIQ"
               aria-label="GitHub"
               sx={{ alignSelf: 'center' }}
             >
               <GitHubIcon />
             </IconButton>
+            <IconButton 
+              color="inherit"
+              size="small"
+              href="#"
+              aria-label="Instagram"
+              sx={{ alignSelf: 'center' }}
+              >
+                <InstagramIcon />
+              </IconButton>
             <IconButton
               color="inherit"
               size="small"
