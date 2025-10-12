@@ -16,6 +16,7 @@ import Sitemark from './SitemarkIcon';
 import { Link } from 'react-router-dom';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
+  minHeight: '65px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -44,20 +45,26 @@ export default function AppAppBar() {
       enableColorOnDark
       sx={{
         boxShadow: 0,
-        bgcolor: 'transparent',
+        bgcolor: 'background.default',
         backgroundImage: 'none',
         mt: 'calc(var(--template-frame-height, 0px) + 28px)',
+        top: -3,
+        left: -9,
+        right: 0,
+        width: '101.1%',
+        margin: 0,
+        padding: 0,
       }}
     >
-      <Container maxWidth="lg">
+      <Box sx={{width: '100%'}}>
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
             <Sitemark />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Button component={Link} to="/home" variant="text" color="info" size="small">
+              <Button component={Link} to="/home" variant="text" color="info" size="large">
                 Home
               </Button>
-              <Button component={Link} to="/about" variant="text" color="info" size="small">
+              <Button component={Link} to="/about" variant="text" color="info" size="large">
                 About
               </Button>
             </Box>
@@ -69,10 +76,10 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button component={Link} to="/signin" color="primary" variant="text" size="small">
+            <Button component={Link} to="/signin" color="primary" variant="text" size="medium">
               Sign in
             </Button>
-            <Button component={Link} to="/signup" color="primary" variant="contained" size="small">
+            <Button component={Link} to="/signup" color="primary" variant="contained" size="medium">
               Sign up
             </Button>
             <ColorModeIconDropdown />
@@ -128,7 +135,7 @@ export default function AppAppBar() {
             </Drawer>
           </Box>
         </StyledToolbar>
-      </Container>
+      </Box>
     </AppBar>
   );
 }
