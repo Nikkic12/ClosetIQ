@@ -7,7 +7,6 @@ import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -16,6 +15,11 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../themes/AppTheme';
 import ColorModeSelect from '../themes/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../components/CustomIcons';
+
+import { Link, useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -60,6 +64,10 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props: { disableCustomTheme?: boolean }) {
+  // setup navigate, get app context
+  const navigate = useNavigate();
+  const {backendUrl, setIsLoggedIn, getUserData} = React.useContext(AppContext);
+
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -68,6 +76,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
 
   const validateInputs = () => {
+    console.log("validateInputs called!");
     const email = document.getElementById('email') as HTMLInputElement;
     const password = document.getElementById('password') as HTMLInputElement;
     const name = document.getElementById('name') as HTMLInputElement;
@@ -104,18 +113,46 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
     return isValid;
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    if (nameError || emailError || passwordError) {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    try {
       event.preventDefault();
-      return;
+
+      // if there is an error, don't register
+      if (nameError || emailError || passwordError) {
+        // move event.preventDefault() here when done to refresh the page after submit
+        return;
+      }
+
+      const formData = new FormData(event.currentTarget);
+      const name = formData.get("name");
+      const email = formData.get("email");
+      const password = formData.get("password");
+      console.log("Registered as user:", {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password')
+      });
+
+      // send cookies with request
+      axios.defaults.withCredentials = true;
+
+      // backend API call to register
+      const {data} = await axios.post(backendUrl + "/api/auth/register", {name, email, password});
+
+      if(data.success) {
+        setIsLoggedIn(true);
+        getUserData();
+        navigate("/");
+      }
+      else {
+        // send a toastify alert
+        toast.error(data.message);
+      }
     }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    catch(error) {
+      const err = error as any;
+      toast.error(err.response?.data?.message || "An error occurred during registration");
+    }
   };
 
   return (
@@ -182,10 +219,6 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I want to receive updates via email."
-            />
             <Button
               type="submit"
               fullWidth
@@ -217,13 +250,14 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Already have an account?{' '}
-              <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+              <Typography
+                component={Link} 
+                to="/signin"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
                 Sign in
-              </Link>
+              </Typography>
             </Typography>
           </Box>
         </Card>

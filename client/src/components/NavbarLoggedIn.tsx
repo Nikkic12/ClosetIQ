@@ -15,9 +15,9 @@ import ColorModeIconDropdown from '../themes/ColorModeIconDropdown';
 import Sitemark from './SitemarkIcon';
 
 import { Link } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
 
-const StyledToolbar = styled(Toolbar)(({ theme }) => ({
-  minHeight: '65px',
+const StyledToolbar = styled(Toolbar)(({ theme }  ) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -34,6 +34,8 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 export default function AppAppBar() {
+  const {userData} = React.useContext(AppContext);
+
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -62,11 +64,17 @@ export default function AppAppBar() {
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
             <Sitemark />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Button component={Link} to="/" variant="text" color="info" size="large">
-                Home
+              <Button component={Link} to="/closet" variant="text" color="info" size="large">
+                Closet
               </Button>
-              <Button component={Link} to="/about" variant="text" color="info" size="large">
-                About
+              <Button component={Link} to="/tryon" variant="text" color="info" size="large">
+                Try-on
+              </Button>
+              <Button component={Link} to="/catalogue" variant="text" color="info" size="large">
+                Catalogue
+              </Button>
+              <Button component={Link} to="/profile" variant="text" color="info" size="large">
+                Profile
               </Button>
             </Box>
           </Box>
@@ -77,11 +85,14 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button component={Link} to="/signin" color="primary" variant="text" size="medium">
-              Sign in
-            </Button>
-            <Button component={Link} to="/signup" color="primary" variant="contained" size="medium">
-              Sign up
+            {/* only display this button if user hasn't verified */}
+            {!userData.isAccountVerified && 
+              <Button component={Link} to="/" color="primary" variant="contained" fullWidth>
+                Verify email
+              </Button>
+            }
+            <Button component={Link} to="/" color="primary" variant="text" size="small">
+              Log out
             </Button>
             <ColorModeIconDropdown />
           </Box>
@@ -112,24 +123,37 @@ export default function AppAppBar() {
                   </IconButton>
                 </Box>
                 <MenuItem>
-                  <Button component={Link} to="/">
-                    Home  
+                  <Button component={Link} to="/closet">
+                    Closet  
                   </Button>
                 </MenuItem>
                 <MenuItem>
-                  <Button component={Link} to="/about">
-                    About
+                  <Button component={Link} to="/tryon">
+                    Try-on
+                  </Button>
+                </MenuItem>
+                <MenuItem>
+                  <Button component={Link} to="/catalogue">
+                    Catalogue
+                  </Button>
+                </MenuItem>
+                <MenuItem>
+                  <Button component={Link} to="/profile">
+                    Profile
                   </Button>
                 </MenuItem>
                 <Divider sx={{ my: 3 }} />
+                {/* only display this button if user hasn't verified */}
+                {!userData.isAccountVerified && 
+                  <MenuItem>
+                    <Button component={Link} to="/" color="primary" variant="contained" fullWidth>
+                      Verify email
+                    </Button>
+                  </MenuItem>
+                }
                 <MenuItem>
                   <Button component={Link} to="/signin" color="primary" variant="outlined" fullWidth>
-                    Sign in
-                  </Button>
-                </MenuItem>
-                <MenuItem>
-                  <Button component={Link} to="/signup" color="primary" variant="contained" fullWidth>
-                    Sign up
+                    Log out
                   </Button>
                 </MenuItem>
               </Box>

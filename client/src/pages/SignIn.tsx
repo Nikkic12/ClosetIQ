@@ -7,7 +7,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -17,6 +16,11 @@ import ForgotPassword from '../components/ForgotPassword';
 import AppTheme from '../themes/AppTheme';
 import ColorModeSelect from '../themes/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../components/CustomIcons';
+
+import { Link, useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -61,6 +65,10 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn(props: { disableCustomTheme?: boolean }) {
+  // setup navigate, get app context
+  const navigate = useNavigate(); 
+  const {backendUrl, setIsLoggedIn, getUserData} = React.useContext(AppContext);
+
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -75,16 +83,43 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     setOpen(false);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    if (emailError || passwordError) {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    try {
       event.preventDefault();
-      return;
+
+      // if there is an error, don't log in
+      if (emailError || passwordError) {
+        return;
+      }
+
+      const formData = new FormData(event.currentTarget);
+      const email = formData.get("email");
+      const password = formData.get("password");
+      console.log("Logged in with user:", {
+        email: formData.get('email'),
+        password: formData.get('password')
+      });
+
+      // send cookies with request
+      axios.defaults.withCredentials = true;
+
+      // backend API call to login
+      const {data} = await axios.post(backendUrl + "/api/auth/login", {email, password});
+
+      if(data.success) {
+        setIsLoggedIn(true);
+        getUserData();
+        navigate("/");
+      }
+      else {
+        // send a toastify alert
+        toast.error(data.message);
+      }
     }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    catch(error) {
+      const err = error as any;
+      toast.error(err.response?.data?.message || "An error occurred during login");
+    }
   };
 
   const validateInputs = () => {
@@ -173,10 +208,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <ForgotPassword open={open} handleClose={handleClose} />
             <Button
               type="submit"
@@ -186,15 +217,16 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
             >
               Sign in
             </Button>
-            <Link
-              component="button"
+            <Typography
+              component={Link}
+              to=""
               type="button"
               onClick={handleClickOpen}
               variant="body2"
               sx={{ alignSelf: 'center' }}
             >
               Forgot your password?
-            </Link>
+            </Typography>
           </Box>
           <Divider>or</Divider>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -216,13 +248,14 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Don&apos;t have an account?{' '}
-              <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+              <Typography
+                component={Link} 
+                to="/signup"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
                 Sign up
-              </Link>
+              </Typography>
             </Typography>
           </Box>
         </Card>

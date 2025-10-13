@@ -20,8 +20,8 @@ export default function TryOn(props: { disableCustomTheme?: boolean }) {
         component="main"
         sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
       >
-        <h1>Profile</h1>
-        <p>Hello, {userData ? userData.name : "Guest"}, welcome to your profile!</p>
+        <h1>Catalogue</h1>
+        <p>Hello, {userData ? userData.name : "Guest"}, welcome to the Catalogue!</p>
       </Container>
 
       <Footer />
