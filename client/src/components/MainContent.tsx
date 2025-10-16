@@ -15,42 +15,44 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { styled } from '@mui/material/styles';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import RssFeedRoundedIcon from '@mui/icons-material/RssFeedRounded';
+import CheckroomIcon from '@mui/icons-material/Checkroom';
+
+
 
 const cardData = [
   {
     img: 'https://picsum.photos/800/450?random=1',
-    tag: 'Engineering',
-    title: 'Revolutionizing software development with cutting-edge tools',
+    tag: 'Virtual Closet',
+    title: 'Revolutionizing fashion in the digital age',
     description:
-      'Our latest engineering tools are designed to streamline workflows and boost productivity. Discover how these innovations are transforming the software development landscape.',
+      "Upload your own clothes or explore our stylish collection to build a digital wardrobe that’s all yours. Keep everything organized and at your fingertips anytime, anywhere!",
     authors: [
-      { name: 'Remy Sharp', avatar: '/static/images/avatar/1.jpg' },
-      { name: 'Travis Howard', avatar: '/static/images/avatar/2.jpg' },
+      { name: 'ClosetIQ Team', avatar: '/static/images/avatar/1.jpg' },
     ],
   },
   {
     img: 'https://picsum.photos/800/450?random=2',
-    tag: 'Product',
-    title: 'Innovative product features that drive success',
+    tag: 'Outfit Creator',
+    title: 'Innovative outfit creation features that saves you time',
     description:
-      'Explore the key features of our latest product release that are helping businesses achieve their goals. From user-friendly interfaces to robust functionality, learn why our product stands out.',
-    authors: [{ name: 'Erica Johns', avatar: '/static/images/avatar/6.jpg' }],
+      "Unleash your inner stylist! Swipe, mix, and match your pieces to create outfits you love—and save them so you’ll never run out of style inspiration.",
+    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/6.jpg' }],
   },
   {
     img: 'https://picsum.photos/800/450?random=3',
-    tag: 'Design',
-    title: 'Designing for the future: trends and insights',
+    tag: 'Outfit Recommendations',
+    title: 'Easy outfit recommendations for any occasion',
     description:
-      'Stay ahead of the curve with the latest design trends and insights. Our design team shares their expertise on creating intuitive and visually stunning user experiences.',
-    authors: [{ name: 'Kate Morrison', avatar: '/static/images/avatar/7.jpg' }],
+      "Need a little fashion help? Our smart tagging system suggests perfect outfit combos for any occasion.",
+    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/7.jpg' }],
   },
   {
     img: 'https://picsum.photos/800/450?random=4',
-    tag: 'Company',
-    title: "Our company's journey: milestones and achievements",
+    tag: 'About Closet IQ',
+    title: "Our company's journey: goals and achievements",
     description:
-      "Take a look at our company's journey and the milestones we've achieved along the way. From humble beginnings to industry leader, discover our story of growth and success.",
-    authors: [{ name: 'Cindy Baker', avatar: '/static/images/avatar/3.jpg' }],
+      "Read more about our company and our contributors in our About Page.",
+    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/3.jpg' }],
   },
   {
     img: 'https://picsum.photos/800/450?random=45',
@@ -59,17 +61,40 @@ const cardData = [
     description:
       "Learn about our commitment to sustainability and the innovative engineering solutions we're implementing to create a greener future. Discover the impact of our eco-friendly initiatives.",
     authors: [
-      { name: 'Agnes Walker', avatar: '/static/images/avatar/4.jpg' },
-      { name: 'Trevor Henderson', avatar: '/static/images/avatar/5.jpg' },
+      { name: 'ClosetIQ Team', avatar: '/static/images/avatar/4.jpg' },
     ],
   },
   {
     img: 'https://picsum.photos/800/450?random=6',
-    tag: 'Product',
-    title: 'Maximizing efficiency with our latest product updates',
+    tag: 'Personalized Account',
+    title: 'Secure and convenient access to your style world',
     description:
-      'Our recent product updates are designed to help you maximize efficiency and achieve more. Get a detailed overview of the new features and improvements that can elevate your workflow.',
-    authors: [{ name: 'Travis Howard', avatar: '/static/images/avatar/2.jpg' }],
+      'Keep your closet and favorite outfits safe with a personal account. Log in anytime, anywhere.',
+    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/2.jpg' }],
+  },
+  {
+    img: 'src/assets/step1.png',
+    tag: 'Upload Clothes',
+    title: 'Upload photos of your clothes to get started with your virtual closet.',
+    description:
+      '',
+    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/2.jpg' }],
+  },
+  {
+    img: 'src/assets/step2.png',
+    tag: 'Create Outfits ',
+    title: 'Create stylish outfits by swiping through your uploaded clothes.',
+    description:
+      '',
+    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/2.jpg' }],
+  },
+  {
+    img: 'src/assets/step3.png',
+    tag: 'Save Outfits',
+    title: 'Save your favorite outfits to your own virtual closet.',
+    description:
+      '',
+    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/2.jpg' }],
   },
 ];
 
@@ -85,7 +110,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
   '&:focus-visible': {
     outline: '3px solid',
-    outlineColor: 'hsla(210, 98%, 48%, 0.5)',
+    outlineColor: 'hsla(269, 98%, 48%, 0.50)',
     outlineOffset: '2px',
   },
 }));
@@ -124,21 +149,11 @@ function Author({ authors }: { authors: { name: string; avatar: string }[] }) {
       <Box
         sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}
       >
-        <AvatarGroup max={3}>
-          {authors.map((author, index) => (
-            <Avatar
-              key={index}
-              alt={author.name}
-              src={author.avatar}
-              sx={{ width: 24, height: 24 }}
-            />
-          ))}
-        </AvatarGroup>
+        <CheckroomIcon fontSize="small" color="primary" />
         <Typography variant="caption">
           {authors.map((author) => author.name).join(', ')}
         </Typography>
       </Box>
-      <Typography variant="caption">July 14, 2021</Typography>
     </Box>
   );
 }
@@ -184,10 +199,11 @@ export default function MainContent() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       <div>
-        <Typography variant="h1" gutterBottom>
-          Blog
+        <Typography variant="h1" color = "#673ab7" gutterBottom
+          sx={{ fontSize: '3.5rem', fontWeight: 700 }}>
+          ClosetIQ
         </Typography>
-        <Typography>Stay in the loop with the latest about our products</Typography>
+        <Typography variant="h3" color="#673ab7">What is ClosetIQ ?</Typography>
       </div>
       <Box
         sx={{
@@ -222,11 +238,11 @@ export default function MainContent() {
             overflow: 'auto',
           }}
         >
-          <Chip onClick={handleClick} size="medium" label="All categories" />
+          {/* <Chip onClick={handleClick} size="medium" label="All categories" />
           <Chip
             onClick={handleClick}
             size="medium"
-            label="Company"
+            label="Virtual Closet"
             sx={{
               backgroundColor: 'transparent',
               border: 'none',
@@ -235,7 +251,7 @@ export default function MainContent() {
           <Chip
             onClick={handleClick}
             size="medium"
-            label="Product"
+            label="Outfit Recommendations"
             sx={{
               backgroundColor: 'transparent',
               border: 'none',
@@ -244,7 +260,7 @@ export default function MainContent() {
           <Chip
             onClick={handleClick}
             size="medium"
-            label="Design"
+            label="Outfit Creator"
             sx={{
               backgroundColor: 'transparent',
               border: 'none',
@@ -253,27 +269,14 @@ export default function MainContent() {
           <Chip
             onClick={handleClick}
             size="medium"
-            label="Engineering"
+            label="Pesonalized Account"
             sx={{
               backgroundColor: 'transparent',
               border: 'none',
             }}
-          />
+          /> */}
         </Box>
-        <Box
-          sx={{
-            display: { xs: 'none', sm: 'flex' },
-            flexDirection: 'row',
-            gap: 1,
-            width: { xs: '100%', md: 'fit-content' },
-            overflow: 'auto',
-          }}
-        >
-          <Search />
-          <IconButton size="small" aria-label="RSS feed">
-            <RssFeedRoundedIcon />
-          </IconButton>
-        </Box>
+
       </Box>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -295,13 +298,13 @@ export default function MainContent() {
               }}
             />
             <StyledCardContent>
-              <Typography gutterBottom variant="caption" component="div">
+              <Typography gutterBottom variant="h2" color="#673ab7" component="div">
                 {cardData[0].tag}
               </Typography>
-              <Typography gutterBottom variant="h6" component="div">
+              <Typography gutterBottom variant="h5" component="div">
                 {cardData[0].title}
               </Typography>
-              <StyledTypography variant="body2" color="text.secondary" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
                 {cardData[0].description}
               </StyledTypography>
             </StyledCardContent>
@@ -327,19 +330,20 @@ export default function MainContent() {
               }}
             />
             <StyledCardContent>
-              <Typography gutterBottom variant="caption" component="div">
+              <Typography gutterBottom variant="h2" color="#673ab7" component="div">
                 {cardData[1].tag}
               </Typography>
-              <Typography gutterBottom variant="h6" component="div">
+              <Typography gutterBottom variant="h5" component="div">
                 {cardData[1].title}
               </Typography>
-              <StyledTypography variant="body2" color="text.secondary" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
                 {cardData[1].description}
               </StyledTypography>
             </StyledCardContent>
             <Author authors={cardData[1].authors} />
           </StyledCard>
         </Grid>
+           
         <Grid size={{ xs: 12, md: 4 }}>
           <StyledCard
             variant="outlined"
@@ -349,6 +353,7 @@ export default function MainContent() {
             className={focusedCardIndex === 2 ? 'Mui-focused' : ''}
             sx={{ height: '100%' }}
           >
+        
             <CardMedia
               component="img"
               alt="green iguana"
@@ -358,93 +363,53 @@ export default function MainContent() {
                 aspectRatio: { sm: '16 / 9', md: '' },
               }}
             />
+           
             <StyledCardContent>
-              <Typography gutterBottom variant="caption" component="div">
+              <Typography gutterBottom variant="h3" color="#673ab7" component="div">
                 {cardData[2].tag}
               </Typography>
-              <Typography gutterBottom variant="h6" component="div">
+              <Typography gutterBottom variant="h5" component="div">
                 {cardData[2].title}
               </Typography>
-              <StyledTypography variant="body2" color="text.secondary" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
                 {cardData[2].description}
               </StyledTypography>
             </StyledCardContent>
             <Author authors={cardData[2].authors} />
           </StyledCard>
         </Grid>
+      
         <Grid size={{ xs: 12, md: 4 }}>
-          <Box
-            sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}
+          <StyledCard
+            variant="outlined"
+            onFocus={() => handleFocus(3)}
+            onBlur={handleBlur}
+            tabIndex={0}
+            className={focusedCardIndex === 3 ? 'Mui-focused' : ''}
+            sx={{ height: '100%' }}
           >
-            <StyledCard
-              variant="outlined"
-              onFocus={() => handleFocus(3)}
-              onBlur={handleBlur}
-              tabIndex={0}
-              className={focusedCardIndex === 3 ? 'Mui-focused' : ''}
-              sx={{ height: '100%' }}
-            >
-              <StyledCardContent
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  height: '100%',
-                }}
-              >
-                <div>
-                  <Typography gutterBottom variant="caption" component="div">
-                    {cardData[3].tag}
-                  </Typography>
-                  <Typography gutterBottom variant="h6" component="div">
-                    {cardData[3].title}
-                  </Typography>
-                  <StyledTypography
-                    variant="body2"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    {cardData[3].description}
-                  </StyledTypography>
-                </div>
-              </StyledCardContent>
-              <Author authors={cardData[3].authors} />
-            </StyledCard>
-            <StyledCard
-              variant="outlined"
-              onFocus={() => handleFocus(4)}
-              onBlur={handleBlur}
-              tabIndex={0}
-              className={focusedCardIndex === 4 ? 'Mui-focused' : ''}
-              sx={{ height: '100%' }}
-            >
-              <StyledCardContent
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  height: '100%',
-                }}
-              >
-                <div>
-                  <Typography gutterBottom variant="caption" component="div">
-                    {cardData[4].tag}
-                  </Typography>
-                  <Typography gutterBottom variant="h6" component="div">
-                    {cardData[4].title}
-                  </Typography>
-                  <StyledTypography
-                    variant="body2"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    {cardData[4].description}
-                  </StyledTypography>
-                </div>
-              </StyledCardContent>
-              <Author authors={cardData[4].authors} />
-            </StyledCard>
-          </Box>
+            <CardMedia
+              component="img"
+              alt="green iguana"
+              image={cardData[3].img}
+              sx={{
+                height: { sm: 'auto', md: '50%' },
+                aspectRatio: { sm: '16 / 9', md: '' },
+              }}
+            />
+            <StyledCardContent>
+              <Typography gutterBottom variant="h3" color="#673ab7" component="div">
+                {cardData[3].tag}
+              </Typography>
+              <Typography gutterBottom variant="h5" component="div">
+                {cardData[3].title}
+              </Typography>
+              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+                {cardData[3].description}
+              </StyledTypography>
+            </StyledCardContent>
+            <Author authors={cardData[3].authors} />
+          </StyledCard>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <StyledCard
@@ -465,14 +430,127 @@ export default function MainContent() {
               }}
             />
             <StyledCardContent>
-              <Typography gutterBottom variant="caption" component="div">
+              <Typography gutterBottom variant="h3" color="#673ab7" component="div">
                 {cardData[5].tag}
               </Typography>
-              <Typography gutterBottom variant="h6" component="div">
+              <Typography gutterBottom variant="h5" component="div">
                 {cardData[5].title}
               </Typography>
-              <StyledTypography variant="body2" color="text.secondary" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
                 {cardData[5].description}
+              </StyledTypography>
+            </StyledCardContent>
+            <Author authors={cardData[5].authors} />
+          </StyledCard>
+        </Grid>
+
+        <Grid size = {{ xs: 16, md: 12 }}> <Typography  variant="h3" align="center" backgroundcolor = "#ede7f6" color="#673ab7">How Does It Work?</Typography></Grid>    
+         <Grid size={{ xs: 12, md: 4 }}>
+          <StyledCard
+            variant="outlined"
+            onFocus={() => handleFocus(2)}
+            onBlur={handleBlur}
+            tabIndex={0}
+            className={focusedCardIndex === 2 ? 'Mui-focused' : ''}
+            sx={{ height: '100%' }}
+          >
+        
+            <CardMedia
+              component="img"
+              alt="green iguana"
+              image={cardData[6].img}
+              sx={{
+                width: { xs: '60%', sm: '65%', md: '70%' },  
+                height: 'auto',                               
+                objectFit: 'contain',                        
+                display: 'block',                            
+                mx: 'auto',                                  
+                mt: 2,  
+              }}
+            />
+           
+            <StyledCardContent>
+              <Typography gutterBottom variant="h2" align="center" color="#673ab7" component="div">
+                {cardData[6].tag}
+              </Typography>
+              <Typography gutterBottom variant="h3" align ="center" component="div">
+                {cardData[6].title}
+              </Typography>
+              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+                {cardData[6].description}
+              </StyledTypography>
+            </StyledCardContent>
+            <Author authors={cardData[2].authors} />
+          </StyledCard>
+        </Grid>
+      
+        <Grid size={{ xs: 12, md: 4 }}>
+          <StyledCard
+            variant="outlined"
+            onFocus={() => handleFocus(3)}
+            onBlur={handleBlur}
+            tabIndex={0}
+            className={focusedCardIndex === 3 ? 'Mui-focused' : ''}
+            sx={{ height: '100%' }}
+          >
+            <CardMedia
+              component="img"
+              alt="green iguana"
+              image={cardData[7].img}
+              sx={{
+                width: { xs: '60%', sm: '65%', md: '70%' },  
+                height: 'auto',                               
+                objectFit: 'contain',                        
+                display: 'block',                            
+                mx: 'auto',                                  
+                mt: 2,   
+              }}
+            />
+            <StyledCardContent>
+               <Typography gutterBottom variant="h2" align="center" color="#673ab7" component="div">
+                {cardData[7].tag}
+              </Typography>
+              <Typography gutterBottom variant="h3" align ="center" component="div">
+                {cardData[7].title}
+              </Typography>
+              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+                {cardData[7].description}
+              </StyledTypography>
+            </StyledCardContent>
+            <Author authors={cardData[3].authors} />
+          </StyledCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <StyledCard
+            variant="outlined"
+            onFocus={() => handleFocus(5)}
+            onBlur={handleBlur}
+            tabIndex={0}
+            className={focusedCardIndex === 5 ? 'Mui-focused' : ''}
+            sx={{ height: '100%' }}
+          >
+            <CardMedia
+              component="img"
+              alt="green iguana"
+              image={cardData[8].img}
+              sx={{
+                width: { xs: '60%', sm: '65%', md: '70%' },  
+                height: 'auto',                               
+                objectFit: 'contain',                        
+                display: 'block',                            
+                mx: 'auto',                                  
+                mt: 2,   
+              }}
+            />
+            <StyledCardContent>
+              <Typography gutterBottom variant="h2" align="center" color="#673ab7" component="div">
+                {cardData[8].tag}
+              </Typography>
+              <Typography gutterBottom variant="h3" align ="center" component="div">
+                {cardData[8].title}
+              </Typography>
+              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+                {cardData[8].description}
               </StyledTypography>
             </StyledCardContent>
             <Author authors={cardData[5].authors} />
