@@ -14,8 +14,10 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ColorModeIconDropdown from '../themes/ColorModeIconDropdown';
 import Sitemark from './SitemarkIcon';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const StyledToolbar = styled(Toolbar)(({ theme }  ) => ({
   display: 'flex',
@@ -34,9 +36,51 @@ const StyledToolbar = styled(Toolbar)(({ theme }  ) => ({
 }));
 
 export default function AppAppBar() {
-  const {userData} = React.useContext(AppContext);
+  const navigate = useNavigate(); 
+  const {userData, backendUrl, setUserData, setIsLoggedIn} = React.useContext(AppContext);
 
   const [open, setOpen] = React.useState(false);
+
+  // verify email function
+  const sendVerificationOtp = async () => {
+      try {
+          axios.defaults.withCredentials = true;
+          // call logout API endpoint to logout the current user
+          const {data} = await axios.post(backendUrl + "/api/auth/send-verify-otp");
+
+          if(data.success) {
+            navigate("/verifyemail");
+            toast.success(data.message);
+          }
+          else {
+            toast.error(data.message);
+          }
+      }
+      catch(error) {
+        const err = error as any;
+        toast.error(err.message);
+      }
+  }
+
+  // logout function
+  const logout = async () => {
+      try {
+          axios.defaults.withCredentials = true;
+          // call logout API endpoint to logout the current user
+          const {data} = await axios.post(backendUrl + "/api/auth/logout");
+
+          data.success && setIsLoggedIn(false);
+          data.success && setUserData(true);
+          navigate("/");
+          window.location.reload(); // refresh the page
+      }
+      catch(error) {
+        const err = error as any;
+        toast.error(err.message);
+      }
+  }
+
+  
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -87,11 +131,11 @@ export default function AppAppBar() {
           >
             {/* only display this button if user hasn't verified */}
             {!userData.isAccountVerified && 
-              <Button component={Link} to="/" color="primary" variant="contained" fullWidth>
+              <Button onClick={sendVerificationOtp} color="primary" variant="contained" fullWidth>
                 Verify email
               </Button>
             }
-            <Button component={Link} to="/" color="primary" variant="text" size="small">
+            <Button onClick={logout} color="primary" variant="text" size="small">
               Log out
             </Button>
             <ColorModeIconDropdown />
@@ -146,13 +190,13 @@ export default function AppAppBar() {
                 {/* only display this button if user hasn't verified */}
                 {!userData.isAccountVerified && 
                   <MenuItem>
-                    <Button component={Link} to="/" color="primary" variant="contained" fullWidth>
+                    <Button onClick={sendVerificationOtp} color="primary" variant="contained" fullWidth>
                       Verify email
                     </Button>
                   </MenuItem>
                 }
                 <MenuItem>
-                  <Button component={Link} to="/signin" color="primary" variant="outlined" fullWidth>
+                  <Button onClick={logout} color="primary" variant="outlined" fullWidth>
                     Log out
                   </Button>
                 </MenuItem>

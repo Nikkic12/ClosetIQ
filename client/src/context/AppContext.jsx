@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
+    // don't log out a user when they refresh the page
+    axios.defaults.withCredentials = true;
+
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState(false);
@@ -18,7 +21,7 @@ export const AppContextProvider = (props) => {
             }
         }
         catch(error) {
-            toast.error(error.response?.data?.message || "An error occurred while getting authentication state");
+            toast.error(error.message);
         }
     }
 
@@ -33,7 +36,7 @@ export const AppContextProvider = (props) => {
             data.success ? setUserData(data.userData) : toast.error(data.message);
         }
         catch(error) {
-            toast.error(error.response?.data?.message || "An error occurred while getting user data");
+            toast.error(error.message);
         }
     }
 

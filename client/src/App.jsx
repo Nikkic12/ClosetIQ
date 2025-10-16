@@ -9,6 +9,8 @@ import Closet from './pages/Closet'
 import TryOn from './pages/TryOn'
 import Catalogue from './pages/Catalogue'
 import Profile from './pages/Profile'
+import VerifyEmail from './pages/VerifyEmail'
+import ForgotPassword from './pages/ForgotPassword'
 import NotFound from './pages/NotFound'
 
 // login system
@@ -34,6 +36,8 @@ function App() {
               <Route path="/tryon" element={<TryOn />} />
               <Route path="/catalogue" element={<Catalogue/>} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/verifyemail" element={<VerifyEmail />} />
+              <Route path="/forgotpassword" element={<ForgotPassword />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

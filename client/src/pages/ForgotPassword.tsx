@@ -1,12 +1,12 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import AppTheme from '../themes/AppTheme';
-import SignInForm from '../components/SignInForm';
+import ForgotPasswordForm from '../components/ForgotPasswordForm';
 
-export default function SignIn(props: { disableCustomTheme?: boolean }) {
+export default function ForgotPassword(props: { disableCustomTheme?: boolean }) {
   return (
     <AppTheme {...props}>
         <CssBaseline enableColorScheme />
-        <SignInForm />
+        <ForgotPasswordForm />
     </AppTheme>
   );
 }

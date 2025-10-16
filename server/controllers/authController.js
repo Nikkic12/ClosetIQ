@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 import userModel from "../models/userModel.js";
 import transporter from "../config/nodeMailer.js";
-import userAuth from "../middleware/userAuth.js";
+import { WELCOME_TEMPLATE, EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from "../config/emailTemplate.js";
 
 export const register = async (req, res) => {
     // need all 3 (name, email, password) to register
@@ -45,7 +45,8 @@ export const register = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: email,
             subject: "Welcome to ClosetIQ!",
-            text: `Welcome to ClosetIQ! Your account has been created with email id: ${email}`
+            ///text: `Welcome to ClosetIQ! Your account has been created with email id: ${email}`,
+            html: WELCOME_TEMPLATE.replace("{{email}}", user.email)
         }
         await transporter.sendMail(mailOptions); // send an email with the above listed options
 
@@ -137,7 +138,8 @@ export const sendVerifyOtp = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: "Account Verification OTP",
-            text: `Your OTP is: ${otp}. Verify your account using this OTP.`
+            //text: `Your OTP is: ${otp}. Verify your account using this OTP.`,
+            html: EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", user.email)
         }
         await transporter.sendMail(mailOption);
 
@@ -220,7 +222,8 @@ export const sendResetOtp = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: "Password Reset OTP",
-            text: `Your OTP for resettig your password is: ${otp}. Reset your password using this OTP.`
+            //text: `Your OTP for resettig your password is: ${otp}. Reset your password using this OTP.`,
+            html: PASSWORD_RESET_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", user.email)
         }
         await transporter.sendMail(mailOption);
 
@@ -231,13 +234,14 @@ export const sendResetOtp = async (req, res) => {
     }
 }
 
-// reset user password
-export const resetPassword = async (req, res) => {
-    const {email, otp, newPassword} = req.body;
-    if(!email || !otp || !newPassword) {
-        return res.json({success: false, message: "Email, OTP, and new password are required"});
-    }
+// email to verify account for resetting password
+export const verifyEmailResetPassword = async (req, res) => {
+    const {email, otp} = req.body;
     
+    if(!email || !otp) {
+        return res.json({success: false, message: "Missing details"});
+    }
+
     try {
         const user = await userModel.findOne({email});
 
@@ -248,19 +252,39 @@ export const resetPassword = async (req, res) => {
             return res.json({success: false, message: "Invalid OTP"});
         }
         if(user.resetOtpExpireAt < Date.now()) {
-            return res.json({success: false, message: "OTP is expired"});
+            return res.json({success: false, message: "OTP expired"});
         }
 
-        // set new password into the existing user in the database
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-        user.password = hashedPassword;
+        // don't verify account bc this is for the reset password form
         user.resetOtp = "";
         user.resetOtpExpireAt = 0;
 
         await user.save();
+        return res.json({success: true, message: "Email verified successfully for reset password"});
+    }
+    catch(error) {
+        res.json({success: false, message: error.message});
+    }
+}
 
-        return res.json({success: true, message: "Password has been reset successfully"});
+// reset user password
+export const resetPassword = async (req, res) => {
+    const {email, otp, newPassword} = req.body;
+
+    if(!email || !otp || !newPassword) {
+        return res.json({success: false, message: "Email, OTP, and new password are required"});
+    }
+    
+    try {
+        const user = await userModel.findOne({email});
+
+        // set new password into the existing user in the database
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return res.json({success: true, message: "Password reset successfully"});
     }
     catch(error) {
         res.json({success: false, message: error.message});

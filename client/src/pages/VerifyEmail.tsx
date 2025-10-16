@@ -1,12 +1,12 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import AppTheme from '../themes/AppTheme';
-import SignInForm from '../components/SignInForm';
+import VerifyEmailForm from '../components/VerifyEmailForm';
 
-export default function SignIn(props: { disableCustomTheme?: boolean }) {
+export default function VerifyEmail(props: { disableCustomTheme?: boolean }) {
   return (
     <AppTheme {...props}>
         <CssBaseline enableColorScheme />
-        <SignInForm />
+        <VerifyEmailForm />
     </AppTheme>
   );
 }
