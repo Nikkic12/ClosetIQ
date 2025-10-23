@@ -16,7 +16,7 @@ import { styled } from '@mui/material/styles';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import RssFeedRoundedIcon from '@mui/icons-material/RssFeedRounded';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
-
+import { useTheme } from '@mui/material/styles'; 
 
 
 const cardData = [
@@ -196,14 +196,24 @@ export default function MainContent() {
     console.info('You clicked the filter chip.');
   };
 
+  const theme = useTheme();
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4,
+          minHeight: "100vh",
+          background: `linear-gradient(180deg, ${theme.palette.background.default} 0%, ${theme.palette.primary.light}14 55%)`,
+          pb: 8,
+          mt: 6,
+        }} 
+        >
       <div>
         <Typography variant="h1" color = "#673ab7" gutterBottom
-          sx={{ fontSize: '3.5rem', fontWeight: 700 }}>
+          sx={{ fontSize: '3.5rem', fontWeight: 700,
+            color: '#7851A9', }}>
           ClosetIQ
         </Typography>
-        <Typography variant="h3" color="#673ab7">What is ClosetIQ ?</Typography>
+        <Typography variant="h3" color="#9E7BB5" >What is ClosetIQ?</Typography>
       </div>
       <Box
         sx={{
@@ -298,13 +308,13 @@ export default function MainContent() {
               }}
             />
             <StyledCardContent>
-              <Typography gutterBottom variant="h2" color="#673ab7" component="div">
+              <Typography gutterBottom variant="h2" color="#9E7BB5" component="div">
                 {cardData[0].tag}
               </Typography>
               <Typography gutterBottom variant="h5" component="div">
                 {cardData[0].title}
               </Typography>
-              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#B6B5D8" gutterBottom>
                 {cardData[0].description}
               </StyledTypography>
             </StyledCardContent>
@@ -330,13 +340,13 @@ export default function MainContent() {
               }}
             />
             <StyledCardContent>
-              <Typography gutterBottom variant="h2" color="#673ab7" component="div">
+              <Typography gutterBottom variant="h2" color="#9E7BB5" component="div">
                 {cardData[1].tag}
               </Typography>
               <Typography gutterBottom variant="h5" component="div">
                 {cardData[1].title}
               </Typography>
-              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#B6B5D8" gutterBottom>
                 {cardData[1].description}
               </StyledTypography>
             </StyledCardContent>
@@ -365,13 +375,13 @@ export default function MainContent() {
             />
            
             <StyledCardContent>
-              <Typography gutterBottom variant="h3" color="#673ab7" component="div">
+              <Typography gutterBottom variant="h2" color="#9E7BB5" component="div">
                 {cardData[2].tag}
               </Typography>
               <Typography gutterBottom variant="h5" component="div">
                 {cardData[2].title}
               </Typography>
-              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#B6B5D8" gutterBottom>
                 {cardData[2].description}
               </StyledTypography>
             </StyledCardContent>
@@ -398,13 +408,13 @@ export default function MainContent() {
               }}
             />
             <StyledCardContent>
-              <Typography gutterBottom variant="h3" color="#673ab7" component="div">
+              <Typography gutterBottom variant="h2" color="#9E7BB5" component="div">
                 {cardData[3].tag}
               </Typography>
               <Typography gutterBottom variant="h5" component="div">
                 {cardData[3].title}
               </Typography>
-              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#B6B5D8" gutterBottom>
                 {cardData[3].description}
               </StyledTypography>
             </StyledCardContent>
@@ -430,13 +440,13 @@ export default function MainContent() {
               }}
             />
             <StyledCardContent>
-              <Typography gutterBottom variant="h3" color="#673ab7" component="div">
+              <Typography gutterBottom variant="h2" color="#9E7BB5" component="div">
                 {cardData[5].tag}
               </Typography>
               <Typography gutterBottom variant="h5" component="div">
                 {cardData[5].title}
               </Typography>
-              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#B6B5D8" gutterBottom>
                 {cardData[5].description}
               </StyledTypography>
             </StyledCardContent>
@@ -444,7 +454,7 @@ export default function MainContent() {
           </StyledCard>
         </Grid>
 
-        <Grid size = {{ xs: 16, md: 12 }}> <Typography  variant="h3" align="center" backgroundcolor = "#ede7f6" color="#673ab7">How Does It Work?</Typography></Grid>    
+        <Grid size = {{ xs: 16, md: 12 }}> <Typography  variant="h3" align="center" backgroundcolor = "#ede7f6" color="#9E7BB5">How Does It Work?</Typography></Grid>    
          <Grid size={{ xs: 12, md: 4 }}>
           <StyledCard
             variant="outlined"
@@ -470,13 +480,13 @@ export default function MainContent() {
             />
            
             <StyledCardContent>
-              <Typography gutterBottom variant="h2" align="center" color="#673ab7" component="div">
+              <Typography gutterBottom variant="h2" align="center" color="#9E7BB5" component="div">
                 {cardData[6].tag}
               </Typography>
               <Typography gutterBottom variant="h3" align ="center" component="div">
                 {cardData[6].title}
               </Typography>
-              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#9E7BB5" gutterBottom>
                 {cardData[6].description}
               </StyledTypography>
             </StyledCardContent>
@@ -507,13 +517,13 @@ export default function MainContent() {
               }}
             />
             <StyledCardContent>
-               <Typography gutterBottom variant="h2" align="center" color="#673ab7" component="div">
+               <Typography gutterBottom variant="h2" align="center" color="#9E7BB5" component="div">
                 {cardData[7].tag}
               </Typography>
               <Typography gutterBottom variant="h3" align ="center" component="div">
                 {cardData[7].title}
               </Typography>
-              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#9E7BB5" gutterBottom>
                 {cardData[7].description}
               </StyledTypography>
             </StyledCardContent>
@@ -543,13 +553,13 @@ export default function MainContent() {
               }}
             />
             <StyledCardContent>
-              <Typography gutterBottom variant="h2" align="center" color="#673ab7" component="div">
+              <Typography gutterBottom variant="h2" align="center" color="#9E7BB5" component="div">
                 {cardData[8].tag}
               </Typography>
               <Typography gutterBottom variant="h3" align ="center" component="div">
                 {cardData[8].title}
               </Typography>
-              <StyledTypography variant="body1" fontSize={14} color="#673ab7" gutterBottom>
+              <StyledTypography variant="body1" fontSize={14} color="#9E7BB5" gutterBottom>
                 {cardData[8].description}
               </StyledTypography>
             </StyledCardContent>
