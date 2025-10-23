@@ -22,7 +22,11 @@ export default function Home(props: { disableCustomTheme?: boolean }) {
       <Container
         maxWidth="lg"
         component="main"
-        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4, minHeight: '100vh',
+        background: 'linear-gradient(180deg, #ffffff 0%, #000000 100%)',
+        pb: 8,
+        mt: 6,
+     }}
         >
         <h1>Home</h1>
         <p>Hello, {userData ? userData.name : "Guest"}!</p>

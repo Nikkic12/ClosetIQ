@@ -293,8 +293,18 @@ export default function ForgotPasswordForm() {
                         <Button
                             type="submit"
                             fullWidth
-                            variant="contained"
-                            onClick={validateInputs}
+                            onClick={validateInputs}  
+                            sx={{
+                                backgroundColor: '#7851A9',
+                                color: '#fff',
+                                border: 'none',
+                                boxShadow: 'none',
+                                outline: 'none',
+                                '&:hover': {
+                                  backgroundColor: '#6A4799',
+                                  boxShadow: 'none',
+                                },
+                              }}
                         >
                             Submit
                         </Button>
@@ -461,7 +471,7 @@ export default function ForgotPasswordForm() {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            onClick={validateInputs}
+                            onClick={validateInputs} 
                         >
                             Submit
                         </Button>

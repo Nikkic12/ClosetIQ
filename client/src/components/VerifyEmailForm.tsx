@@ -285,8 +285,18 @@ export default function OtpForm() {
                     <Button
                         type="submit"
                         fullWidth
-                        variant="contained"
                         onClick={validateInputs}
+                        sx={{
+                            backgroundColor: '#7851A9',
+                            color: '#fff',
+                            border: 'none',
+                            boxShadow: 'none',
+                            outline: 'none',
+                            '&:hover': {
+                              backgroundColor: '#6A4799',
+                              boxShadow: 'none',
+                            },
+                          }}
                     >
                         Submit
                     </Button>
