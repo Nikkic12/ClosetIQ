@@ -195,8 +195,18 @@ export default function SignInForm() {
                     <Button
                         type="submit"
                         fullWidth
-                        variant="contained"
                         onClick={validateInputs}
+                        sx={{
+                            backgroundColor: '#7851A9',
+                            color: '#fff',
+                            border: 'none',
+                            boxShadow: 'none',
+                            outline: 'none',
+                            '&:hover': {
+                              backgroundColor: '#6A4799',
+                              boxShadow: 'none',
+                            },
+                          }}
                     >
                         Sign in
                     </Button>
@@ -211,23 +221,6 @@ export default function SignInForm() {
                     </Typography>
                 </Box>
                 <Divider>or</Divider>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <Button
-                        fullWidth
-                        variant="outlined"
-                        onClick={() => alert('Sign in with Google')}
-                        startIcon={<GoogleIcon />}
-                    >
-                        Sign in with Google
-                    </Button>
-                    <Button
-                        fullWidth
-                        variant="outlined"
-                        onClick={() => alert('Sign in with Facebook')}
-                        startIcon={<FacebookIcon />}
-                    >
-                        Sign in with Facebook
-                    </Button>
                     <Typography sx={{ textAlign: 'center' }}>
                         Don&apos;t have an account?{' '}
                         <Typography
@@ -239,7 +232,6 @@ export default function SignInForm() {
                             Sign up
                         </Typography>
                     </Typography>
-                </Box>
             </Card>
         </SignInContainer>
     );

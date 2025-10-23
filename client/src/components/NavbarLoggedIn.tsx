@@ -131,7 +131,18 @@ export default function AppAppBar() {
           >
             {/* only display this button if user hasn't verified */}
             {!userData.isAccountVerified && 
-              <Button onClick={sendVerificationOtp} color="primary" variant="contained" fullWidth>
+              <Button onClick={sendVerificationOtp} color="primary" fullWidth
+              sx={{
+                backgroundColor: '#7851A9',
+                color: '#fff',
+                border: 'none',
+                boxShadow: 'none',
+                outline: 'none',
+                '&:hover': {
+                  backgroundColor: '#6A4799',
+                  boxShadow: 'none',
+                },
+              }}>
                 Verify email
               </Button>
             }

@@ -16,6 +16,21 @@ import Sitemark from './SitemarkIcon';
 
 import { Link } from 'react-router-dom';
 
+const PurpleButton = styled(Button)(({ theme }) => ({
+  '&.MuiButton-contained': {
+    background: '#7851A9',
+    backgroundImage: 'none',
+    color: '#fff',
+  },
+  '&.MuiButton-contained:hover': {
+    background: '#6A4799',
+    backgroundImage: 'none',
+  },
+  '&.MuiButton-contained:active': {
+    background: '#5A3E8E',
+  },
+}));
+
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   minHeight: '65px',
   display: 'flex',
@@ -80,9 +95,21 @@ export default function AppAppBar() {
             <Button component={Link} to="/signin" color="primary" variant="text" size="medium">
               Sign in
             </Button>
-            <Button component={Link} to="/signup" color="primary" variant="contained" size="medium">
-              Sign up
-            </Button>
+            <Link to="/signup">
+              <PurpleButton color="primary"  size="medium" sx={{
+                    backgroundColor: '#7851A9',
+                    color: '#fff',
+                    border: 'none',
+                    boxShadow: 'none',
+                    outline: 'none',
+                    '&:hover': {
+                      backgroundColor: '#6A4799',
+                      boxShadow: 'none',
+                    },
+                  }}>
+                Sign up
+              </PurpleButton>
+            </Link>
             <ColorModeIconDropdown />
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>

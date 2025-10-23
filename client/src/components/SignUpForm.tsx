@@ -17,6 +17,21 @@ import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+const PurpleButton = styled(Button)(({ theme }) => ({
+  '&.MuiButton-contained': {
+    background: '#7851A9',
+    backgroundImage: 'none',
+    color: '#fff',
+  },
+  '&.MuiButton-contained:hover': {
+    background: '#6A4799',
+    backgroundImage: 'none',
+  },
+  '&.MuiButton-contained:active': {
+    background: '#5A3E8E',
+  },
+}));
+
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -161,7 +176,7 @@ export default function SignUpForm() {
           variant="h4"
           sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
         >
-          Sign up
+          Create Account
         </Typography>
         <Box
           component="form"
@@ -213,19 +228,30 @@ export default function SignUpForm() {
               color={passwordError ? 'error' : 'primary'}
             />
           </FormControl>
-          <Button
+          <PurpleButton
             type="submit"
             fullWidth
-            variant="contained"
+            sx={{
+              backgroundColor: '#7851A9',
+              color: '#fff',
+              border: 'none',
+              boxShadow: 'none',
+              outline: 'none',
+              '&:hover': {
+                backgroundColor: '#6A4799',
+                boxShadow: 'none',
+              },
+            }}
             onClick={validateInputs}
+            
           >
             Sign up
-          </Button>
+          </PurpleButton>
         </Box>
         <Divider>
           <Typography sx={{ color: 'text.secondary' }}>or</Typography>
         </Divider>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {/* <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Button
             fullWidth
             variant="outlined"
@@ -233,15 +259,15 @@ export default function SignUpForm() {
             startIcon={<GoogleIcon />}
           >
             Sign up with Google
-          </Button>
-          <Button
+          </Button> */}
+          {/* <Button
             fullWidth
             variant="outlined"
             onClick={() => alert('Sign up with Facebook')}
             startIcon={<FacebookIcon />}
           >
             Sign up with Facebook
-          </Button>
+          </Button> */}
           <Typography sx={{ textAlign: 'center' }}>
             Already have an account?{' '}
             <Typography
@@ -253,7 +279,7 @@ export default function SignUpForm() {
               Sign in
             </Typography>
           </Typography>
-        </Box>
+        {/* </Box> */}
       </Card>
     </SignUpContainer>
   );
