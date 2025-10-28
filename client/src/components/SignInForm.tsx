@@ -10,7 +10,6 @@ import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import ColorModeSelect from '../themes/ColorModeSelect';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../components/CustomIcons';
 
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
@@ -139,7 +138,11 @@ export default function SignInForm() {
         <SignInContainer direction="column" justifyContent="space-between">
             <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
             <Card variant="outlined">
-                <SitemarkIcon />
+            <img 
+              src="/src/assets/closetiq_logo.png"
+              alt="ClosetIQ Logo"
+              style={{ width: 150, marginLeft: -5, marginRight: -1 }} //16 
+            />
                 <Typography
                     component="h1"
                     variant="h4"

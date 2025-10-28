@@ -12,7 +12,6 @@ import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ColorModeIconDropdown from '../themes/ColorModeIconDropdown';
-import Sitemark from './SitemarkIcon';
 
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
@@ -106,7 +105,11 @@ export default function AppAppBar() {
       <Box sx={{width: '100%'}}>
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-            <Sitemark />
+          <img 
+              src="/src/assets/closetiq_logo.png"
+              alt="ClosetIQ Logo"
+              style={{ height: 55, marginLeft: 4, marginRight: 2 }} //16 
+            />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <Button component={Link} to="/closet" variant="text" color="info" size="large">
                 Closet

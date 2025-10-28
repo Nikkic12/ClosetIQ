@@ -13,14 +13,13 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/X';
-import SitemarkIcon from './SitemarkIcon';
 
 function Copyright() {
   return (
     <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
       {'Copyright © '}
       <Link color="text.secondary" href="https://mui.com/">
-        Sitemark
+        ClosetIQ
       </Link>
       &nbsp;
       {new Date().getFullYear()}
@@ -59,7 +58,11 @@ export default function Footer() {
             }}
           >
             <Box sx={{ width: { xs: '100%', sm: '60%' } }}>
-              <SitemarkIcon />
+            <img 
+              src="/src/assets/closetiq_logo.png"
+              alt="ClosetIQ Logo"
+              style={{ height: 45, marginLeft: -5 }} //16 
+            />
               <Typography
                 variant="body2"
                 gutterBottom
