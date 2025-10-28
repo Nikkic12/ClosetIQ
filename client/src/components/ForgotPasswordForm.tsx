@@ -9,7 +9,6 @@ import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import ColorModeSelect from '../themes/ColorModeSelect';
-import { SitemarkIcon } from '../components/CustomIcons';
 
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
@@ -254,13 +253,17 @@ export default function ForgotPasswordForm() {
             <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
             {!isEmailSent && (
                 <Card variant="outlined">
-                    <SitemarkIcon />
+                    <img 
+                        src="/src/assets/closetiq_logo.png"
+                        alt="ClosetIQ Logo"
+                        style={{ width: 150, marginLeft: -9, marginRight: -1 }} //16 
+                        />
                     <Typography
                         component="h1"
                         variant="h4"
                         sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
                     >
-                        Reset Password
+                        Reset Password 
                     </Typography>
                     <Box
                         component="form"
@@ -313,7 +316,11 @@ export default function ForgotPasswordForm() {
             )}
             {isEmailSent && !isOtpSubmitted && (
                 <Card variant="outlined">
-                    <SitemarkIcon />
+                    <img 
+                        src="/src/assets/closetiq_logo.png"
+                        alt="ClosetIQ Logo"
+                        style={{ height: 55, marginLeft: 5, marginRight: -1 }} //16 
+                        />
                     <Typography
                         component="h1"
                         variant="h4"
@@ -431,7 +438,11 @@ export default function ForgotPasswordForm() {
             )}
             {isEmailSent && isOtpSubmitted && (
                 <Card variant="outlined">
-                    <SitemarkIcon />
+                    <img 
+                        src="/src/assets/closetiq_logo.png"
+                        alt="ClosetIQ Logo"
+                        style={{ height: 55, marginLeft: 5, marginRight: -1 }} //16 
+                        />
                     <Typography
                         component="h1"
                         variant="h4"

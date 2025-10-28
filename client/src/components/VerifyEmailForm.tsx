@@ -9,7 +9,6 @@ import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import ColorModeSelect from '../themes/ColorModeSelect';
-import { SitemarkIcon } from './CustomIcons';
 
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
@@ -177,7 +176,11 @@ export default function OtpForm() {
         <VerifyEmailFormContainer direction="column" justifyContent="space-between">
             <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
             <Card variant="outlined">
-                <SitemarkIcon />
+            <img 
+              src="/src/assets/closetiq_logo.png"
+              alt="ClosetIQ Logo"
+              style={{ width: 150, marginLeft: -6 }} //16 
+            />
                 <Typography
                     component="h1"
                     variant="h4"
@@ -284,7 +287,7 @@ export default function OtpForm() {
                     </FormControl>
                     <Button
                         type="submit"
-                        fullWidth
+                        fullWidth 
                         onClick={validateInputs}
                         sx={{
                             backgroundColor: '#7851A9',

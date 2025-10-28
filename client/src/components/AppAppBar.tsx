@@ -75,7 +75,11 @@ export default function AppAppBar() {
       <Box sx={{width: '100%'}}>
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-            <Sitemark />
+            <img 
+              src="/src/assets/closetiq_logo.png"
+              alt="ClosetIQ Logo"
+              style={{ height: 55, marginLeft: 5, marginRight: -1 }} //16 
+            />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <Button component={Link} to="/" variant="text" color="info" size="large">
                 Home
