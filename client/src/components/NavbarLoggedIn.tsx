@@ -61,26 +61,6 @@ export default function AppAppBar() {
       }
   }
 
-  // logout function
-  const logout = async () => {
-      try {
-          axios.defaults.withCredentials = true;
-          // call logout API endpoint to logout the current user
-          const {data} = await axios.post(backendUrl + "/api/auth/logout");
-
-          data.success && setIsLoggedIn(false);
-          data.success && setUserData(true);
-          navigate("/");
-          window.location.reload(); // refresh the page
-      }
-      catch(error) {
-        const err = error as any;
-        toast.error(err.message);
-      }
-  }
-
-  
-
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
@@ -105,7 +85,7 @@ export default function AppAppBar() {
       <Box sx={{width: '100%'}}>
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-          <img 
+            <img 
               src="/src/assets/closetiq_logo.png"
               alt="ClosetIQ Logo"
               style={{ height: 55, marginLeft: 4, marginRight: 2 }} //16 
@@ -119,9 +99,6 @@ export default function AppAppBar() {
               </Button>
               <Button component={Link} to="/catalogue" variant="text" color="info" size="large">
                 Catalogue
-              </Button>
-              <Button component={Link} to="/profile" variant="text" color="info" size="large">
-                Profile
               </Button>
             </Box>
           </Box>
@@ -149,8 +126,8 @@ export default function AppAppBar() {
                 Verify email
               </Button>
             }
-            <Button onClick={logout} color="primary" variant="text" size="small">
-              Log out
+            <Button component={Link} to="/profile" variant="text" color="info" size="large">
+                Profile
             </Button>
             <ColorModeIconDropdown />
           </Box>
@@ -195,11 +172,6 @@ export default function AppAppBar() {
                     Catalogue
                   </Button>
                 </MenuItem>
-                <MenuItem>
-                  <Button component={Link} to="/profile">
-                    Profile
-                  </Button>
-                </MenuItem>
                 <Divider sx={{ my: 3 }} />
                 {/* only display this button if user hasn't verified */}
                 {!userData.isAccountVerified && 
@@ -209,11 +181,6 @@ export default function AppAppBar() {
                     </Button>
                   </MenuItem>
                 }
-                <MenuItem>
-                  <Button onClick={logout} color="primary" variant="outlined" fullWidth>
-                    Log out
-                  </Button>
-                </MenuItem>
               </Box>
             </Drawer>
           </Box>
