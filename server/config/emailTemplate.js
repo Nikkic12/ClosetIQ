@@ -34,7 +34,7 @@ export const WELCOME_TEMPLATE = `
 
     .button {
       width: 100%;
-      background: #22D172;
+      background: #7851A9;
       text-decoration: none;
       display: inline-block;
       padding: 10px 0;
@@ -68,6 +68,9 @@ export const WELCOME_TEMPLATE = `
                 <td class="main-content">
                   <table width="100%" cellspacing="0" cellpadding="0" border="0">
                     <tbody>
+                      <tr>
+                        <img src="https://res.cloudinary.com/dwuugri6p/image/upload/v1762211663/closetiq_logo_xvt7tm.png" alt="ClosetIQ Logo" width="200"/>
+                      </tr>
                       <tr>
                         <td style="padding: 0 0 24px; font-size: 18px; line-height: 150%; font-weight: bold;">
                           Welcome to ClosetIQ!
@@ -133,7 +136,7 @@ export const EMAIL_VERIFY_TEMPLATE = `
 
     .button {
       width: 100%;
-      background: #22D172;
+      background: #7851A9;
       text-decoration: none;
       display: inline-block;
       padding: 10px 0;
@@ -167,6 +170,9 @@ export const EMAIL_VERIFY_TEMPLATE = `
                 <td class="main-content">
                   <table width="100%" cellspacing="0" cellpadding="0" border="0">
                     <tbody>
+                      <tr>
+                        <img src="https://res.cloudinary.com/dwuugri6p/image/upload/v1762211663/closetiq_logo_xvt7tm.png" alt="ClosetIQ Logo" width="200"/>
+                      </tr>
                       <tr>
                         <td style="padding: 0 0 24px; font-size: 18px; line-height: 150%; font-weight: bold;">
                           Verify your email
@@ -242,7 +248,7 @@ export const PASSWORD_RESET_TEMPLATE = `
 
     .button {
       width: 100%;
-      background: #22D172;
+      background: #7851A9;
       text-decoration: none;
       display: inline-block;
       padding: 10px 0;
@@ -276,6 +282,9 @@ export const PASSWORD_RESET_TEMPLATE = `
                 <td class="main-content">
                   <table width="100%" cellspacing="0" cellpadding="0" border="0">
                     <tbody>
+                      <tr>
+                        <img src="https://res.cloudinary.com/dwuugri6p/image/upload/v1762211663/closetiq_logo_xvt7tm.png" alt="ClosetIQ Logo" width="200"/>
+                      </tr>
                       <tr>
                         <td style="padding: 0 0 24px; font-size: 18px; line-height: 150%; font-weight: bold;">
                           Forgot your password?

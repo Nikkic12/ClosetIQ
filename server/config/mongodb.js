@@ -6,7 +6,9 @@ const connectDB = async () => {
         console.log("MongoDB database connected");
     });
 
-    await mongoose.connect(`${process.env.ATLAS_URI}/mern-auth`); 
+    await mongoose.connect(process.env.ATLAS_URI, {
+        dbName: 'closetiq_data'
+    }); 
 };
 
 export default connectDB;

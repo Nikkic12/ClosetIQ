@@ -8,10 +8,12 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
 import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import signUploadRoutes from "./routes/signUploadRoutes.js";
+import { errorHandler } from "./middleware/error.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
-connectDB();
 
 // allow this url to make API calls
 const allowedOrigins = ["http://localhost:5173"];
@@ -26,8 +28,13 @@ app.get("/", (req, res) => {
 });
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/upload", uploadRoutes);
+app.use("/api/sign-upload", signUploadRoutes);
+
+app.use(errorHandler); // use middleware
 
 app.listen(port, () => {
+    connectDB();
     console.log("Server started on port:", port);
 });
 
