@@ -1,4 +1,5 @@
-import uploadModel from "../models/uploadModel.js";
+import uploadModel from "../models/uploadModel.js"
+import catalogueModel from "../models/catalogueModel.js";
 import userModel from "../models/userModel.js";
 
 export const createUpload = async (req, res, next) => {
@@ -17,31 +18,60 @@ export const createUpload = async (req, res, next) => {
         return next(new Error("Not authenticated"));
     }
 
-    try {
-        // get user data and name
-        const user = await userModel.findById(userId).select("name");
-        const uploaderName = user ? user.name : "Unknown";
+    // get user data and name
+    const user = await userModel.findById(userId).select("name");
+    const uploaderName = user ? user.name : "Unknown";
 
-        // create upload with all clothing details
-        const upload = await uploadModel.create({
-            imgUrl,
-            user: userId,
-            uploaderName,
-            primaryType,
-            secondaryType,
-            occasion,
-            color,
-            gender
-        });
+    if (uploaderName == "Catalogue") {
+        try {
+            // create upload with all clothing details
+            const upload = await catalogueModel.create({
+                imgUrl,
+                user: userId,
+                uploaderName,
+                primaryType,
+                secondaryType,
+                occasion,
+                color,
+                gender
+            });
 
-        res.status(201).json({
-            success: true,
-            upload
-        });
+            res.status(201).json({
+                success: true,
+                upload
+            });
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500);
+            next(error);
+        }
     }
-    catch (error) {
-        console.log(error);
-        res.status(500);
-        next(error);
+    else {
+        try {
+            // create upload with all clothing details
+            const upload = await uploadModel.create({
+                imgUrl,
+                user: userId,
+                uploaderName,
+                primaryType,
+                secondaryType,
+                occasion,
+                color,
+                gender
+            });
+
+            res.status(201).json({
+                success: true,
+                upload
+            });
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500);
+            next(error);
+        }
     }
+
+
 }
