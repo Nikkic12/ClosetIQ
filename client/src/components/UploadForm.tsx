@@ -7,21 +7,30 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { BorderClear, CloudUpload } from '@mui/icons-material';
+import { CloudUpload } from '@mui/icons-material';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Divider from '@mui/material/Divider';
+
+import { toast } from 'react-toastify';
 
 export default function UploadForm() {
     const backendUrl = "http://localhost:4000"; //import.meta.env.VITE_BACKEND_URL;
 
-    const [img, setImg] = React.useState<File | null>(null); // keep first file for existing upload flow
+    const [primaryType, setPrimaryType] = React.useState('top');
+    const [secondaryType, setSecondaryType] = React.useState('shortsleeves');
+    const [occasion, setOccasion] = React.useState('formal');
+    const [color, setColor] = React.useState('red');
+    const [gender, setGender] = React.useState('mens');
+
+    const [img, setImg] = React.useState<File | null>(null); // needs to not be null (another TypeScript error)
     const [loading, setLoading] = React.useState(false);
 
     const [dragOver, setDragOver] = React.useState(false);
-    // support multiple files and previews
-    const [files, setFiles] = React.useState<File[]>([]);
     const [imagePreview, setImagePreview] = React.useState<string | null>(null);
-    const [previews, setPreviews] = React.useState<Array<{src: string; name: string}>>([]);
 
     const handleDragOver = async (event: React.FormEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -36,49 +45,29 @@ export default function UploadForm() {
     const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         setDragOver(false);
-        if (event.dataTransfer.files && event.dataTransfer.files.length) {
-            const arr = Array.from(event.dataTransfer.files);
-            handleFileChange(arr);
+        if (event.dataTransfer.files && event.dataTransfer.files[0]) {
+            handleFileChange(event.dataTransfer.files[0]);
         }
     };
 
     const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files.length) {
-            const arr = Array.from(event.target.files);
-            handleFileChange(arr);
+        if (event.target.files && event.target.files[0]) {
+            handleFileChange(event.target.files[0]);
         }
     };
 
-    const handleFileChange = (fileOrFiles: File | File[]) => {
+    const handleFileChange = (file: File) => {
         setLoading(true);
-        const arr = Array.isArray(fileOrFiles) ? fileOrFiles : [fileOrFiles];
-        setFiles(arr);
-        // keep previous single-file upload behaviour by setting img to first file
-        setImg(arr[0] ?? null);
-
-        // read all files as data URLs for previews
-        const readers = arr.map((file) => {
-            return new Promise<{src: string; name: string}>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    resolve({ src: reader.result as string, name: file.name });
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        });
-
-        Promise.all(readers)
-            .then((results) => {
-                setPreviews(results);
-            })
-            .catch((err) => {
-                console.error('Error reading files for preview', err);
-            })
-            .finally(() => setLoading(false));
+        setImg(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setLoading(false);
+            setImagePreview(reader.result as string | null);
+        };
+        reader.readAsDataURL(file);
     };
 
-    const uploadFile = async (type: string, timestamp: string, signature: string) => {
+    const uploadFile = async () => {
         // need a null check so img won't be appended if its null in data.append("file", img)
         if (!img) {
             console.error("No file selected");
@@ -89,11 +78,7 @@ export default function UploadForm() {
 
         const data = new FormData();
         data.append("file", img);
-        // only use upload preset if using unsigned uploads
-        data.append("upload_preset", "clothing_preset"); // import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-        // data.append("timestamp", timestamp);
-        // data.append("signature", signature);
-        // data.append("api_key", "152168132218584"); // process.env.CLOUDINARY_API_KEY
+        data.append("upload_preset", "clothing_preset");
         data.append("folder", folder);
 
         try {
@@ -113,33 +98,31 @@ export default function UploadForm() {
         }
     }
 
-    const getSignatureForUpload = async (folder: string) => {
-        try {
-            const res = await axios.post(backendUrl + "/api/sign-upload", { folder });
-            return res.data;
-        }
-        catch (error) {
-            console.error(error);
-        }
-    }
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         try {
             setLoading(true);
 
-            // get signature for image upload
-            const { timestamp: imgTimestamp, signature: imgSignature } = await getSignatureForUpload("images");
+            const imgUrl = await uploadFile();
 
-            const imgUrl = await uploadFile("image", imgTimestamp, imgSignature);
-
-            // send backend api request
-            await axios.post(backendUrl + "/api/upload", { imgUrl });
+            // send backend api request with all form values
+            await axios.post(backendUrl + "/api/upload", {
+                imgUrl,
+                primaryType,
+                secondaryType,
+                occasion,  
+                color,
+                gender
+            }, {
+                withCredentials: true
+            });
 
             setImg(null);
-            console.log("File upload success!");
+            setImagePreview(null); // disable image preview after upload
+            console.log("File upload success with clothing details!");
             setLoading(false);
+            toast.success("Upload successful!");
         }
         catch (error) {
             console.error(error);
@@ -151,8 +134,7 @@ export default function UploadForm() {
             sx={{
                 backgroundColor: dragOver ? '#bd94eeff' : '#7851A9',
                 padding: 3,
-                borderRadius: 2,
-                boxShadow: 6,
+                borderRadius: 2
             }}
         >
             <Paper
@@ -183,7 +165,7 @@ export default function UploadForm() {
                         <Box display="flex" flexDirection="column" alignItems="center">
                             <IconButton
                                 sx={{
-                                    color: "transparent",       
+                                    color: "transparent",
                                     backgroundColor: "transparent",
                                     "&:hover": { backgroundColor: "transparent" },
                                     "& .MuiTouchRipple-root": { display: "none" }
@@ -199,9 +181,9 @@ export default function UploadForm() {
                         </Box>
                     </label>
 
-                    <Button 
-                        variant="outlined" 
-                        loading={loading} 
+                    <Button
+                        variant="outlined"
+                        loading={loading}
                         type='submit'
                         sx={{
                             backgroundColor: '#ffffff',
@@ -217,22 +199,109 @@ export default function UploadForm() {
                 </form>
             </Paper>
 
-            {previews.length > 0 && (
-                <Box>
-                    <Typography variant="h4" sx={{ color: '#ffffff', marginTop: 2 }}> Staged Files: </Typography>
-                    <Box display="flex" flexWrap="wrap" gap={2} style={{ marginTop: 24 }}>
-                        {previews.map((p, idx) => (
-                            <Box key={idx} sx={{ width: '20%' }}>
-                                <Box
-                                    component="img"
-                                    src={p.src}
-                                    alt={`Preview ${idx}`}
-                                    sx={{ border: '1px solid #ffffffff', padding: 0.5, width: '100%', height: 'auto' }}
-                                />
-                                <Typography sx={{ color: '#ffffff'}}>{p.name}</Typography>
-                            </Box>
-                        ))}
-                    </Box>
+            {imagePreview && (
+                <Box
+                    sx={{
+                        color: 'white',
+                        '& .MuiFormControlLabel-label': { color: 'white' },
+                        '& .MuiRadio-root': { color: 'white' },
+                        '& .Mui-checked': { color: '#1976d2' }
+                    }}
+                >
+                    <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1, color: '#ffffff' }}>
+                        Add Clothing Details:
+                    </Typography>
+                    <Grid container spacing={4} style={{ marginTop: 16 }}>
+                        {/* left column: image preview */}
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Box
+                                component="img"
+                                src={imagePreview}
+                                alt="Image Preview"
+                                sx={{ width: '100%', height: 'auto' }}
+                            />
+                        </Grid>
+
+                        {/* right column: clothing details */}
+                        <Grid size={{ xs: 12, sm: 6, md: 8 }}>
+
+                            <form onSubmit={handleSubmit}>
+                                <Typography>Primary Type</Typography>
+                                <RadioGroup row name="row-radio-buttons-group" value={primaryType} onChange={(e) => setPrimaryType(e.target.value)}>
+                                    <FormControlLabel value="top" control={<Radio />} label="Top" />
+                                    <FormControlLabel value="bottom" control={<Radio />} label="Bottom" />
+                                    <FormControlLabel value="hat" control={<Radio />} label="Hat" />
+                                    <FormControlLabel value="shoes" control={<Radio />} label="Shoes" />
+                                </RadioGroup>
+
+                                <Divider sx={{ borderWidth: 1, my: 2}} />
+
+                                <Typography>Secondary Type</Typography>
+                                {primaryType === 'top' && (
+                                    <RadioGroup row name="secondary-type" value={secondaryType} onChange={(e) => setSecondaryType(e.target.value)}>
+                                        <FormControlLabel value="shortsleeves" control={<Radio />} label="Shortsleeves" />
+                                        <FormControlLabel value="longsleeves" control={<Radio />} label="Longsleeves" />
+                                        <FormControlLabel value="jacket" control={<Radio />} label="Jacket" />
+                                        <FormControlLabel value="collared" control={<Radio />} label="Collared" />
+                                    </RadioGroup>
+                                )}
+                                {primaryType === 'bottom' && (
+                                    <RadioGroup row name="secondary-type" value={secondaryType} onChange={(e) => setSecondaryType(e.target.value)}>
+                                        <FormControlLabel value="shorts" control={<Radio />} label="Shorts" />
+                                        <FormControlLabel value="pants" control={<Radio />} label="Pants" />
+                                        <FormControlLabel value="leggings" control={<Radio />} label="Leggings" />
+                                        <FormControlLabel value="skirt" control={<Radio />} label="Skirt" />
+                                    </RadioGroup>
+                                )}
+                                {primaryType === 'hat' && (
+                                    <RadioGroup row name="secondary-type" value={secondaryType} onChange={(e) => setSecondaryType(e.target.value)}>
+                                        <FormControlLabel value="baseball" control={<Radio />} label="Baseball Cap" />
+                                        <FormControlLabel value="beanie" control={<Radio />} label="Beanie" />
+                                    </RadioGroup>
+                                )}
+                                {primaryType === 'shoes' && (
+                                    <RadioGroup row name="secondary-type" value={secondaryType} onChange={(e) => setSecondaryType(e.target.value)}>
+                                        <FormControlLabel value="sneakers" control={<Radio />} label="Sneakers" />
+                                        <FormControlLabel value="flipflops" control={<Radio />} label="Flip-flops" />
+                                        <FormControlLabel value="slides" control={<Radio />} label="Slides" />
+                                        <FormControlLabel value="dressshoes" control={<Radio />} label="Dress Shoes" />
+                                    </RadioGroup>
+                                )}
+
+                                <Divider sx={{ borderWidth: 1, my: 2}} />
+
+                                <Typography>Occasion</Typography>
+                                <RadioGroup row name="occasion" value={occasion} onChange={(e) => setOccasion(e.target.value)}>
+                                    <FormControlLabel value="formal" control={<Radio />} label="Formal" />
+                                    <FormControlLabel value="casual" control={<Radio />} label="Casual" />
+                                    <FormControlLabel value="athletic" control={<Radio />} label="Athletic" />
+                                </RadioGroup>
+
+                                <Divider sx={{ borderWidth: 1, my: 2}} />
+
+                                <Typography>Color</Typography>
+                                <RadioGroup row name="color" value={color} onChange={(e) => setColor(e.target.value)}>
+                                    <FormControlLabel value="red" control={<Radio />} label="Red" />
+                                    <FormControlLabel value="orange" control={<Radio />} label="Orange" />
+                                    <FormControlLabel value="yellow" control={<Radio />} label="Yellow" />
+                                    <FormControlLabel value="green" control={<Radio />} label="Green" />
+                                    <FormControlLabel value="blue" control={<Radio />} label="Blue" />
+                                    <FormControlLabel value="purple" control={<Radio />} label="Purple" />
+                                    <FormControlLabel value="white" control={<Radio />} label="White" />
+                                    <FormControlLabel value="black" control={<Radio />} label="Black" />
+                                </RadioGroup>
+
+                                <Divider sx={{ borderWidth: 1, my: 2}} />
+
+                                <Typography>Mens / Womens</Typography>
+                                <RadioGroup row name="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
+                                    <FormControlLabel value="mens" control={<Radio />} label="Mens" />
+                                    <FormControlLabel value="womens" control={<Radio />} label="Womens" />
+                                </RadioGroup>
+                            </form>
+
+                        </Grid>
+                    </Grid>
                 </Box>
             )}
 
