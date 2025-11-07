@@ -75,3 +75,41 @@ export const createUpload = async (req, res, next) => {
 
 
 }
+
+export const getUploadsByUser = async (req, res, next) => {
+    // expect userAuth middleware to have populated req.body.userId
+    const userId = req.body.userId;
+    if (!userId) {
+        res.status(401);
+        return next(new Error("Not authenticated"));
+    }
+    try {
+        const uploads = await uploadModel.find({ user: userId });
+
+        res.status(200).json({
+            success: true,
+            uploads
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500);
+        next(error);
+    }
+}
+
+export const getCatalogueItems = async (req, res, next) => {
+    try {
+        const items = await catalogueModel.find({});
+
+        res.status(200).json({
+            success: true,
+            items
+        });
+        
+    } catch(error){
+        console.log(error);
+        res.status(500);
+        next(error);
+    }
+}
