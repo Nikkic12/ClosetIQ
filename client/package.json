@@ -16,6 +16,8 @@
     "@mui/material": "^7.3.4",
     "@react-three/fiber": "^9.3.0",
     "axios": "^1.12.2",
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "markdown-to-jsx": "^7.7.14",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

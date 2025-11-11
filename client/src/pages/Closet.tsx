@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 
 import { AppContext } from '../context/AppContext';
 import UploadForm from '../components/UploadForm';
+import Gallery from '../components/Gallery';
 
 export default function Closet(props: { disableCustomTheme?: boolean }) {
 
@@ -23,11 +24,13 @@ export default function Closet(props: { disableCustomTheme?: boolean }) {
         sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
       >
         <h1>Closet</h1>
-        <p>Hello, {userData ? userData.name : "Guest"}, welcome to your digital closet!</p>
+        <p>Hello, {userData ? userData.name : "Guest"}, welcome to your Closet page!</p>
 
-        <h1>Upload files</h1>
-        
+        <h2>Upload a Clothing Item:</h2>
         <UploadForm />
+
+        <h2>Your Closet:</h2>
+        <Gallery user={true} />
 
       </Container>
 

@@ -72,8 +72,6 @@ export const createUpload = async (req, res, next) => {
             next(error);
         }
     }
-
-
 }
 
 export const getUploadsByUser = async (req, res, next) => {
@@ -106,10 +104,30 @@ export const getCatalogueItems = async (req, res, next) => {
             success: true,
             items
         });
-        
-    } catch(error){
+    } 
+    catch(error){
         console.log(error);
         res.status(500);
         next(error);
     }
+}
+
+export const getUserClothing = async (req, res, next) => {
+    try {
+        const items = await uploadModel.find({});
+
+        res.status(200).json({
+            success: true,
+            items
+        });
+    } 
+    catch(error){
+        console.log(error);
+        res.status(500);
+        next(error);
+    }
+}
+
+export const getUserOutfits = async (req, res, next) => {
+    
 }

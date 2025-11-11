@@ -1,5 +1,5 @@
 import express from "express";
-import { createUpload, getCatalogueItems } from "../controllers/uploadController.js";
+import { createUpload, getCatalogueItems, getUserClothing, getUserOutfits } from "../controllers/uploadController.js";
 import userAuth from "../middleware/userAuth.js";
 
 const uploadRouter = express.Router();
@@ -8,5 +8,8 @@ const uploadRouter = express.Router();
 uploadRouter.post("/", userAuth, createUpload);
 
 uploadRouter.get("/getCatalogueItems", getCatalogueItems);
+uploadRouter.get("/getUserClothing", getUserClothing);
+uploadRouter.get("/getUserOutfits", getUserOutfits);
+
 
 export default uploadRouter;
