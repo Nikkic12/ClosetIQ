@@ -6,6 +6,8 @@ import NavbarLoggedIn from '../components/NavbarLoggedIn';
 import Footer from '../components/Footer';
 
 import { AppContext } from '../context/AppContext';
+import OutfitForm from '../components/OutfitForm';
+import Gallery from '../components/Gallery';
 
 export default function TryOn(props: { disableCustomTheme?: boolean }) {
   const {userData} = React.useContext(AppContext);
@@ -22,6 +24,14 @@ export default function TryOn(props: { disableCustomTheme?: boolean }) {
       >
         <h1>Try-On</h1>
         <p>Hello, {userData ? userData.name : "Guest"}, welcome to the Try-On page!</p>
+
+        <h2>Make an Outfit:</h2>
+        <OutfitForm />
+
+        <h2>Your Outfits:</h2>
+        <Gallery user={true} /> 
+        {/* add the prop outfits={true} once outfit uploading implementation is complete */}
+
       </Container>
 
       <Footer />
