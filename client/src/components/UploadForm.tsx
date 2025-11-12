@@ -287,8 +287,11 @@ export default function UploadForm() {
                                     <FormControlLabel value="green" control={<Radio />} label="Green" />
                                     <FormControlLabel value="blue" control={<Radio />} label="Blue" />
                                     <FormControlLabel value="purple" control={<Radio />} label="Purple" />
+                                    <FormControlLabel value="pink" control={<Radio />} label="Pink" />
                                     <FormControlLabel value="white" control={<Radio />} label="White" />
                                     <FormControlLabel value="black" control={<Radio />} label="Black" />
+                                    <FormControlLabel value="brown" control={<Radio />} label="Brown" />
+                                    <FormControlLabel value="gray" control={<Radio />} label="Gray" />
                                 </RadioGroup>
 
                                 <Divider sx={{ borderWidth: 1, my: 2}} />
