@@ -2,7 +2,7 @@ import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import AppTheme from '../themes/AppTheme';
-import AppAppBar from '../components/AppAppBar';
+import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export default function About(props: { disableCustomTheme?: boolean }) {
@@ -10,7 +10,7 @@ export default function About(props: { disableCustomTheme?: boolean }) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
 
-      <AppAppBar />
+      <Navbar />
       <Container
         maxWidth="lg"
         component="main"

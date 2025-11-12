@@ -20,30 +20,10 @@ import Carousel from './Carousel';
 export default function UploadForm() {
     const backendUrl = "http://localhost:4000"; //import.meta.env.VITE_BACKEND_URL;
 
-    const [img, setImg] = React.useState<File | null>(null); // needs to not be null (another TypeScript error)
     const [loading, setLoading] = React.useState(false);
-    const [dragOver, setDragOver] = React.useState(false);
-
-    // separate preview for each of the four selection fields: [hat, top, bottom, shoes]
     const [previews, setPreviews] = React.useState<Array<string | null>>([null, null, null, null]);
     
-    // store full clothing item data for each field
-    const [selectedItems, setSelectedItems] = React.useState<Array<{
-        _id: string;
-        imgUrl: string;
-        primaryType: string;
-        secondaryType: string;
-        occasion: string;
-        color: string;
-        gender: string;
-    } | null>>([null, null, null, null]);
-
-    // carousel modal state
-    const [carouselOpen, setCarouselOpen] = React.useState(false);
-    const [carouselFieldIndex, setCarouselFieldIndex] = React.useState<number>(0);
-    const [carouselSelectedIndex, setCarouselSelectedIndex] = React.useState<number>(0);
-
-    // user's clothing items
+    // all of the user's clothing items
     const [userClothingItems, setUserClothingItems] = React.useState<Array<{
         _id: string;
         imgUrl: string;
@@ -54,7 +34,22 @@ export default function UploadForm() {
         gender: string;
     }>>([]);
 
-    // Map field index to primaryType
+    // data for currently selected clothing item in each field
+    const [selectedItems, setSelectedItems] = React.useState<Array<{
+        _id: string;
+        imgUrl: string;
+        primaryType: string;
+        secondaryType: string;
+        occasion: string;
+        color: string;
+        gender: string;
+    } | null>>([null, null, null, null]);
+
+    const [carouselOpen, setCarouselOpen] = React.useState(false);
+    const [carouselFieldIndex, setCarouselFieldIndex] = React.useState<number>(0);
+    const [carouselSelectedIndex, setCarouselSelectedIndex] = React.useState<number>(0);
+    
+    // to keep track of which field is being edited by the user, use fieldIndex variable
     const fieldIndexToPrimaryType = (index: number): string => {
         const mapping: { [key: number]: string } = {
             0: 'hat',
@@ -65,18 +60,7 @@ export default function UploadForm() {
         return mapping[index] || '';
     };
 
-    // Map field index to display name
-    const fieldIndexToDisplayName = (index: number): string => {
-        const mapping: { [key: number]: string } = {
-            0: 'Hats',
-            1: 'Tops',
-            2: 'Bottoms',
-            3: 'Shoes'
-        };
-        return mapping[index] || 'Items';
-    };
-
-    // Fetch user's clothing items
+    // fetch user clothing items
     React.useEffect(() => {
         const fetchUserClothing = async () => {
             try {
@@ -85,7 +69,8 @@ export default function UploadForm() {
                 });
                 const items = data.items || data.data || data;
                 setUserClothingItems(Array.isArray(items) ? items : []);
-            } catch (error) {
+            } 
+            catch (error) {
                 console.error('Error fetching user clothing:', error);
                 setUserClothingItems([]);
             }
@@ -93,9 +78,10 @@ export default function UploadForm() {
         fetchUserClothing();
     }, [backendUrl]);
 
-    // Get filtered photo options based on field index
+    // get photos of a certain primaryType based on what field in OutfitForm the user is editing
     const getFilteredPhotoOptions = (fieldIndex: number) => {
         const primaryType = fieldIndexToPrimaryType(fieldIndex);
+
         const filtered = userClothingItems.filter(item => 
             item.primaryType?.toLowerCase() === primaryType.toLowerCase()
         );
@@ -163,21 +149,19 @@ export default function UploadForm() {
     return (
         <Box
             sx={{
-                backgroundColor: dragOver ? '#bd94eeff' : '#7851A9',
+                backgroundColor: '#7851A9',
                 padding: 3,
                 borderRadius: 2
             }}
         >
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={4} style={{ marginTop: 16 }}>
-                    {/* left column */}
                     <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                         <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1, color: '#ffffff' }}>
                             Hat
                         </Typography>
                     </Grid>
 
-                    {/* middle column */}
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         {!previews[0] && (
                             <Paper
@@ -243,7 +227,7 @@ export default function UploadForm() {
                                         backgroundColor: '#ffffff',
                                         color: '#7851A9',
                                         '&:hover': {
-                                            backgroundColor: '#f5f5f5',  // slightly darker white on hover
+                                            backgroundColor: '#f5f5f5',
                                             color: '#7851A9'
                                         }
                                     }}
@@ -258,7 +242,6 @@ export default function UploadForm() {
                         )}
                     </Grid>
 
-                    {/* right column */}
                     <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                         <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1, color: '#ffffff' }}>
                             Clothing Info
@@ -274,14 +257,12 @@ export default function UploadForm() {
                 <Divider sx={{ borderWidth: 1, my: 2}} />
 
                 <Grid container spacing={4} style={{ marginTop: 16 }}>
-                    {/* left column */}
                     <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                         <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1, color: '#ffffff' }}>
                             Top
                         </Typography>
                     </Grid>
 
-                    {/* middle column */}
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         {!previews[1] && (
                             <Paper
@@ -347,7 +328,7 @@ export default function UploadForm() {
                                         backgroundColor: '#ffffff',
                                         color: '#7851A9',
                                         '&:hover': {
-                                            backgroundColor: '#f5f5f5',  // slightly darker white on hover
+                                            backgroundColor: '#f5f5f5',
                                             color: '#7851A9'
                                         }
                                     }}
@@ -362,7 +343,6 @@ export default function UploadForm() {
                         )}
                     </Grid>
 
-                    {/* right column */}
                     <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                         <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1, color: '#ffffff' }}>
                             Clothing Info
@@ -378,14 +358,12 @@ export default function UploadForm() {
                 <Divider sx={{ borderWidth: 1, my: 2}} />
 
                 <Grid container spacing={4} style={{ marginTop: 16 }}>
-                    {/* left column */}
                     <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                         <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1, color: '#ffffff' }}>
                             Bottom
                         </Typography>
                     </Grid>
 
-                    {/* middle column */}
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         {!previews[2] && (
                             <Paper
@@ -451,7 +429,7 @@ export default function UploadForm() {
                                         backgroundColor: '#ffffff',
                                         color: '#7851A9',
                                         '&:hover': {
-                                            backgroundColor: '#f5f5f5',  // slightly darker white on hover
+                                            backgroundColor: '#f5f5f5',
                                             color: '#7851A9'
                                         }
                                     }}
@@ -466,7 +444,6 @@ export default function UploadForm() {
                         )}
                     </Grid>
 
-                    {/* right column */}
                     <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                         <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1, color: '#ffffff' }}>
                             Clothing Info
@@ -482,14 +459,12 @@ export default function UploadForm() {
                 <Divider sx={{ borderWidth: 1, my: 2}} />
 
                 <Grid container spacing={4} style={{ marginTop: 16 }}>
-                    {/* left column */}
                     <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                         <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1, color: '#ffffff' }}>
                             Shoes
                         </Typography>
                     </Grid>
 
-                    {/* middle column */}
                     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         {!previews[3] && (
                             <Paper
@@ -555,7 +530,7 @@ export default function UploadForm() {
                                         backgroundColor: '#ffffff',
                                         color: '#7851A9',
                                         '&:hover': {
-                                            backgroundColor: '#f5f5f5',  // slightly darker white on hover
+                                            backgroundColor: '#f5f5f5',
                                             color: '#7851A9'
                                         }
                                     }}
@@ -570,7 +545,6 @@ export default function UploadForm() {
                         )}
                     </Grid>
 
-                    {/* right column */}
                     <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                         <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1, color: '#ffffff' }}>
                             Clothing Info
@@ -593,7 +567,7 @@ export default function UploadForm() {
                         backgroundColor: '#ffffff',
                         color: '#7851A9',
                         '&:hover': {
-                            backgroundColor: '#f5f5f5',  // slightly darker white on hover
+                            backgroundColor: '#f5f5f5',
                             color: '#7851A9'
                         }
                     }}
@@ -621,14 +595,17 @@ export default function UploadForm() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button 
-                        onClick={handleConfirmCarouselSelection} 
-                        variant="contained"
-                        disabled={getFilteredPhotoOptions(carouselFieldIndex).length === 0}
-                    >
-                        Select
+                    {getFilteredPhotoOptions(carouselFieldIndex).length != 0 && (
+                        <Button 
+                            onClick={handleConfirmCarouselSelection} 
+                            variant="contained"
+                        >
+                            Select
+                        </Button>
+                    )}
+                    <Button onClick={() => setCarouselOpen(false)}>
+                        Cancel
                     </Button>
-                    <Button onClick={() => setCarouselOpen(false)}>Cancel</Button>
                 </DialogActions>
             </Dialog>
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import AppTheme from '../themes/AppTheme';
-import NavbarLoggedIn from '../components/NavbarLoggedIn';
+import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 import { AppContext } from '../context/AppContext';
@@ -15,7 +15,7 @@ export default function Catalogue(props: { disableCustomTheme?: boolean }) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
 
-      <NavbarLoggedIn />
+      <Navbar />
       <Container
         maxWidth="lg"
         component="main"

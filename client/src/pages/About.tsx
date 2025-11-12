@@ -3,7 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 // import Container from '@mui/material/Container';
 import { useEffect, useState } from "react";
 import AppTheme from '../themes/AppTheme';
-import AppAppBar from '../components/AppAppBar';
+import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import {
   Box,
@@ -74,7 +74,7 @@ export default function About(props: Props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <AppAppBar />
+      <Navbar />
 
       {/* Page background */}
       <Box
