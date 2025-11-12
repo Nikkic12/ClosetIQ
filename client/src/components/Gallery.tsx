@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Container from '@mui/material/Container';
 
+
 import { RowsPhotoAlbum } from "react-photo-album"; // npm install yet-another-react-lightbox/plugins
 import "react-photo-album/rows.css";
 import { Lightbox } from "yet-another-react-lightbox";
@@ -13,12 +14,15 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import { AppContext } from '../context/AppContext';
+import Button from '@mui/material/Button';
+
+
 
 type photoItem = {
   src: string,
   id: string,
+  userID?: string,
   primaryType: string,
   secondaryType: string,
   occasion: string,
@@ -32,22 +36,28 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
     const [photos, setPhotos] = useState<photoItem[]>([]);
     
     const { backendUrl } = React.useContext(AppContext);
+    const { userData } = React.useContext(AppContext);
 
     useEffect(() => {
         const fetchPhotos = async () => {
+              
             try {
                 // if user prop is true, fill the gallery with user photos
                 if (props.user) {
                     console.log("Fetching user photos");
 
                     const { data } = await axios.get(backendUrl + "/api/upload/getUserClothing");
+                    
                     const items = data.items || data.data || data;
 
                     console.log('User items:', items);
 
+                    
+
                     const formattedPhotos = (Array.isArray(items) ? items : []).map((item: any) => ({
                         src: item.imgUrl, // already full Cloudinary URL
                         id: item._id || item.id,     // prefer MongoDB _id, fallback to id
+                        userID: item.user,
                         primaryType: item.primaryType,
                         secondaryType: item.secondaryType,
                         occasion: item.occasion,
@@ -56,7 +66,15 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                         height: 600
                     }));
 
-                    setPhotos(formattedPhotos);
+                    // setPhotos(formattedPhotos);
+
+                    const userId = userData ? userData.userId : "testuserId";
+                    
+                    
+
+                    const UserformattedPhotos = formattedPhotos.filter(photo => photo.userID === userId);
+                    setPhotos(UserformattedPhotos);
+
 
                     // if outfits prop is true, fill the gallery with outfit photos
                     if (props.outfits) {
@@ -82,6 +100,7 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                     const formattedPhotos = (Array.isArray(items) ? items : []).map((item: any) => ({
                         src: item.imgUrl, // already full Cloudinary URL
                         id: item._id || item.id,     // prefer MongoDB _id, fallback to id
+                        userID: item.user,
                         primaryType: item.primaryType,
                         secondaryType: item.secondaryType,
                         occasion: item.occasion,
@@ -101,6 +120,7 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                 setPhotos([{
                     src: 'src/assets/step2.png', // local placeholder image
                     id: 'error-placeholder',
+                    userID: 'error-placeholder',
                     primaryType: 'error',
                     secondaryType: 'error',
                     occasion: 'error',
@@ -112,7 +132,7 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
         };
 
         fetchPhotos();
-    }, []);
+}, [props.user, props.outfits, backendUrl, userData]);
 
     return (
         <Container>
