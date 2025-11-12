@@ -11,12 +11,20 @@ export default function Carousel(props: { photos: Array<{image: string; title: s
             loop: false,
             dragFree: false,
             align: 'center',
-            containScroll: 'trimSnaps',
+            containScroll: false,
         },
         []
     );
     
     const [selectedIndex, setSelectedIndex] = React.useState(0);
+    const [canScrollPrev, setCanScrollPrev] = React.useState(false);
+    const [canScrollNext, setCanScrollNext] = React.useState(false);
+    const onIndexChangeRef = React.useRef(props.onIndexChange);
+    const prevPhotosLength = React.useRef(props.photos.length);
+
+    React.useEffect(() => {
+        onIndexChangeRef.current = props.onIndexChange;
+    }, [props.onIndexChange]);
 
     const scrollPrev = React.useCallback(() => {
         if (emblaApi) emblaApi.scrollPrev();
@@ -29,8 +37,10 @@ export default function Carousel(props: { photos: Array<{image: string; title: s
     const onSelect = React.useCallback(() => {
         if (!emblaApi) return;
         setSelectedIndex(emblaApi.selectedScrollSnap());
+        setCanScrollPrev(emblaApi.canScrollPrev());
+        setCanScrollNext(emblaApi.canScrollNext());
         // notify parent of index change
-        props.onIndexChange?.(emblaApi.selectedScrollSnap());
+        onIndexChangeRef.current?.(emblaApi.selectedScrollSnap());
     }, [emblaApi]);
 
     React.useEffect(() => {
@@ -47,12 +57,22 @@ export default function Carousel(props: { photos: Array<{image: string; title: s
 
     // reinitialize carousel when photos change
     React.useEffect(() => {
-        if (emblaApi && props.photos.length > 0) {
-            emblaApi.reInit();
-            setSelectedIndex(0);
-            props.onIndexChange?.(0);
+        if (!emblaApi) return;
+        const nextLength = props.photos.length;
+        if (prevPhotosLength.current !== nextLength) {
+            if (nextLength > 0) {
+                emblaApi.reInit();
+                setSelectedIndex(0);
+                // Update scroll state after reInit
+                setTimeout(() => {
+                    setCanScrollPrev(emblaApi.canScrollPrev());
+                    setCanScrollNext(emblaApi.canScrollNext());
+                }, 0);
+                onIndexChangeRef.current?.(0);
+            }
+            prevPhotosLength.current = nextLength;
         }
-    }, [emblaApi, props.photos.length, props.onIndexChange]);
+    }, [emblaApi, props.photos.length]);
 
     const isImageCenter = React.useCallback((index: number) => {
         if (!emblaApi) return false;
@@ -83,40 +103,44 @@ export default function Carousel(props: { photos: Array<{image: string; title: s
             }}
         >
             {/* Previous button */}
-            <IconButton
-                onClick={scrollPrev}
-                sx={{
-                    position: 'absolute',
-                    left: 16,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    zIndex: 3,
-                    backgroundColor: theme.palette.background.paper,
-                    '&:hover': {
-                        backgroundColor: theme.palette.action.hover,
-                    }
-                }}
-            >
-                <ArrowBackIosIcon />
-            </IconButton>
+            {canScrollPrev && (
+                <IconButton
+                    onClick={scrollPrev}
+                    sx={{
+                        position: 'absolute',
+                        left: 16,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 3,
+                        backgroundColor: theme.palette.background.paper,
+                        '&:hover': {
+                            backgroundColor: theme.palette.action.hover,
+                        }
+                    }}
+                >
+                    <ArrowBackIosIcon />
+                </IconButton>
+            )}
 
             {/* Next button */}
-            <IconButton
-                onClick={scrollNext}
-                sx={{
-                    position: 'absolute',
-                    right: 16,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    zIndex: 3,
-                    backgroundColor: theme.palette.background.paper,
-                    '&:hover': {
-                        backgroundColor: theme.palette.action.hover,
-                    }
-                }}
-            >
-                <ArrowForwardIosIcon />
-            </IconButton>
+            {canScrollNext && (
+                <IconButton
+                    onClick={scrollNext}
+                    sx={{
+                        position: 'absolute',
+                        right: 16,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 3,
+                        backgroundColor: theme.palette.background.paper,
+                        '&:hover': {
+                            backgroundColor: theme.palette.action.hover,
+                        }
+                    }}
+                >
+                    <ArrowForwardIosIcon />
+                </IconButton>
+            )}
 
             {/* Carousel container */}
             <Box
@@ -133,7 +157,11 @@ export default function Carousel(props: { photos: Array<{image: string; title: s
                     sx={{
                         display: 'flex',
                         gap: 2,
-                        py: 2
+                        py: 2,
+                        // Add padding to ensure items can be centered even with few items
+                        // This creates enough scrollable space for Embla to center items properly
+                        paddingLeft: 'calc(50% - 150px)',
+                        paddingRight: 'calc(50% - 150px)',
                     }}
                 >
                     {props.photos.map((photo, index) => {
@@ -159,7 +187,7 @@ export default function Carousel(props: { photos: Array<{image: string; title: s
                                     sx={{
                                         position: 'relative',
                                         width: '100%',
-                                        height: '400px',
+                                        height: '350px',
                                         borderRadius: 2,
                                         overflow: 'hidden',
                                         border: isCenter 

@@ -2,8 +2,7 @@ import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import AppTheme from '../themes/AppTheme';
-import AppAppBar from '../components/AppAppBar';
-import NavbarLoggedIn from '../components/NavbarLoggedIn';
+import Navbar from '../components/Navbar';
 import MainContent from '../components/MainContent';
 import Footer from '../components/Footer';
 
@@ -19,8 +18,7 @@ export default function Home(props: { disableCustomTheme?: boolean }) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
 
-      {/* if there is userData, displayed the "logged in" navbar */}
-      {userData ? <NavbarLoggedIn /> : <AppAppBar />}
+      <Navbar />
 
       const theme = useTheme();
 
