@@ -139,7 +139,7 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
             <RowsPhotoAlbum
                 photos={photos}
                 targetRowHeight={150}
-                onClick={({ index }) => setIndex(index)} 
+                onClick={({ index }) => setIndex(index)}
             />
 
             <Lightbox
