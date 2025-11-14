@@ -1,5 +1,6 @@
 import uploadModel from "../models/uploadModel.js"
 import catalogueModel from "../models/catalogueModel.js";
+import outfitModel from "../models/outfitModel.js";
 import userModel from "../models/userModel.js";
 
 export const createUpload = async (req, res, next) => {
@@ -74,6 +75,49 @@ export const createUpload = async (req, res, next) => {
     }
 }
 
+export const createOutfit = async (req, res, next) => {
+    const { top, bottom, hat, shoes } = req.body;
+
+    // validate all required fields
+    if (!top && !bottom && !hat && !shoes) {
+        res.status(400);
+        return next(new Error("At least one field required: top, bottom, hat, shoes"));
+    }
+
+    // expect userAuth middleware to have populated req.body.userId
+    const userId = req.body.userId;
+    if (!userId) {
+        res.status(401);
+        return next(new Error("Not authenticated"));
+    }
+
+    // get user data and name
+    const user = await userModel.findById(userId).select("name");
+    const uploaderName = user ? user.name : "Unknown";
+
+    try {
+        // create outfit with given clothing items
+        const outfit = await outfitModel.create({
+            user: userId,
+            uploaderName,
+            top,
+            bottom,
+            hat,
+            shoes
+        });
+
+        res.status(201).json({
+            success: true,
+            outfit
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500);
+        next(error);
+    }
+}
+
 export const getUploadsByUser = async (req, res, next) => {
     // expect userAuth middleware to have populated req.body.userId
     const userId = req.body.userId;
@@ -129,5 +173,21 @@ export const getUserClothing = async (req, res, next) => {
 }
 
 export const getUserOutfits = async (req, res, next) => {
-    
+    try {
+        const items = await outfitModel.find({})
+            .populate('hat')
+            .populate('top')
+            .populate('bottom')
+            .populate('shoes');
+
+        res.status(200).json({
+            success: true,
+            items
+        });
+    } 
+    catch(error){
+        console.log(error);
+        res.status(500);
+        next(error);
+    }
 }

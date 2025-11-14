@@ -29,8 +29,7 @@ export default function TryOn(props: { disableCustomTheme?: boolean }) {
         <OutfitForm />
 
         <h2>Your Outfits:</h2>
-        <Gallery user={true} /> 
-        {/* add the prop outfits={true} once outfit uploading implementation is complete */}
+        <Gallery user={true} outfits={true} /> 
 
       </Container>
 

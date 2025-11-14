@@ -17,33 +17,41 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Carousel from './Carousel';
 
-export default function UploadForm() {
+// type photoItem = {
+//     src: string,
+//     id: string,
+//     userID?: string,
+//     primaryType: string,
+//     secondaryType: string,
+//     occasion: string,
+//     color: string,
+//     width: number,
+//     height: number
+// };
+
+type photoItem = {
+    _id: string;
+    userID?: string,
+    imgUrl: string;
+    primaryType: string;
+    secondaryType: string;
+    occasion: string;
+    color: string;
+    gender: string;
+};
+
+export default function OutfitForm() {
+    const { userData } = React.useContext(AppContext);
     const backendUrl = "http://localhost:4000"; //import.meta.env.VITE_BACKEND_URL;
 
     const [loading, setLoading] = React.useState(false);
     const [previews, setPreviews] = React.useState<Array<string | null>>([null, null, null, null]);
     
     // all of the user's clothing items
-    const [userClothingItems, setUserClothingItems] = React.useState<Array<{
-        _id: string;
-        imgUrl: string;
-        primaryType: string;
-        secondaryType: string;
-        occasion: string;
-        color: string;
-        gender: string;
-    }>>([]);
+    const [userClothingItems, setUserClothingItems] = React.useState<Array<photoItem>>([]);
 
     // data for currently selected clothing item in each field
-    const [selectedItems, setSelectedItems] = React.useState<Array<{
-        _id: string;
-        imgUrl: string;
-        primaryType: string;
-        secondaryType: string;
-        occasion: string;
-        color: string;
-        gender: string;
-    } | null>>([null, null, null, null]);
+    const [selectedItems, setSelectedItems] = React.useState<Array<photoItem | null>>([null, null, null, null]);
 
     const [carouselOpen, setCarouselOpen] = React.useState(false);
     const [carouselFieldIndex, setCarouselFieldIndex] = React.useState<number>(0);
@@ -60,6 +68,26 @@ export default function UploadForm() {
         return mapping[index] || '';
     };
 
+    // clear previews and selected items
+    const clearFields = async (hatField: boolean, topField: boolean, bottomField: boolean, shoesField: boolean) => {
+        setPreviews(prev => { 
+            const copy = [...prev]; 
+            if(hatField) { copy[0] = null; }
+            if(topField) { copy[1] = null; }
+            if(bottomField) { copy[2] = null; } 
+            if(shoesField) { copy[3] = null; } 
+            return copy; 
+        });
+        setSelectedItems(prev => { 
+            const copy = [...prev]; 
+            if(hatField) { copy[0] = null; }
+            if(topField) { copy[1] = null; }
+            if(bottomField) { copy[2] = null; } 
+            if(shoesField) { copy[3] = null; }
+            return copy; 
+        });
+    }
+
     // fetch user clothing items
     React.useEffect(() => {
         const fetchUserClothing = async () => {
@@ -68,7 +96,25 @@ export default function UploadForm() {
                     withCredentials: true
                 });
                 const items = data.items || data.data || data;
-                setUserClothingItems(Array.isArray(items) ? items : []);
+                
+                const formattedPhotos = (Array.isArray(items) ? items : []).map((item: any) => ({
+                    _id: item._id || item.id,
+                    userID: item.user,
+                    imgUrl: item.imgUrl,
+                    primaryType: item.primaryType,
+                    secondaryType: item.secondaryType,
+                    occasion: item.occasion,
+                    color: item.color,
+                    gender: item.gender
+                }));
+
+                // filter to the logged in user's items only
+                const userId = userData ? userData.userId : "testuserId";
+                const userFiltered = formattedPhotos.filter(item => 
+                    item.userID === userId
+                );
+
+                setUserClothingItems(userFiltered);
             } 
             catch (error) {
                 console.error('Error fetching user clothing:', error);
@@ -76,12 +122,13 @@ export default function UploadForm() {
             }
         };
         fetchUserClothing();
-    }, [backendUrl]);
+    }, [backendUrl, userData]);
 
     // get photos of a certain primaryType based on what field in OutfitForm the user is editing
     const getFilteredPhotoOptions = (fieldIndex: number) => {
         const primaryType = fieldIndexToPrimaryType(fieldIndex);
 
+        // filter by correct primaryType
         const filtered = userClothingItems.filter(item => 
             item.primaryType?.toLowerCase() === primaryType.toLowerCase()
         );
@@ -121,25 +168,37 @@ export default function UploadForm() {
         setCarouselOpen(false);
     };
 
-    const uploadOutfit = async () => {
-        
-
-        // TODO implement outfit upload functionality
-
-
-    }
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        if(selectedItems.every(item => item === null)) {
+            toast.error("You need at least one item for your outfit!");
+            setLoading(false);
+            return;
+        }
 
         try {
             setLoading(true);
 
+            // extract ids, allowing null values since making outfits of all fields is optional
+            const hat = selectedItems[0]?._id || null;
+            const top = selectedItems[1]?._id || null;
+            const bottom = selectedItems[2]?._id || null;
+            const shoes = selectedItems[3]?._id || null;
 
-            // TODO implement outfit upload functionality
+            // send backend api request to create an outfit
+            await axios.post(backendUrl + "/api/upload/createOutfit", {
+                top,
+                bottom,
+                hat,
+                shoes
+            }, {
+                withCredentials: true
+            });
             
-
-            toast.success("Upload successful!");
+            clearFields(true, true, true, true); // clear all fields after outfit upload            
+            toast.success("Outfit created successfully!");
+            setLoading(false);
         }
         catch (error) {
             console.error(error);
@@ -231,10 +290,7 @@ export default function UploadForm() {
                                             color: '#7851A9'
                                         }
                                     }}
-                                    onClick={() => {
-                                        setPreviews(prev => { const copy = [...prev]; copy[0] = null; return copy; });
-                                        setSelectedItems(prev => { const copy = [...prev]; copy[0] = null; return copy; });
-                                    }}
+                                    onClick={() => clearFields(true, false, false, false)}
                                 >
                                     Change Item
                                 </Button>
@@ -332,10 +388,7 @@ export default function UploadForm() {
                                             color: '#7851A9'
                                         }
                                     }}
-                                    onClick={() => {
-                                        setPreviews(prev => { const copy = [...prev]; copy[1] = null; return copy; });
-                                        setSelectedItems(prev => { const copy = [...prev]; copy[1] = null; return copy; });
-                                    }}
+                                    onClick={() => clearFields(false, true, false, false)}
                                 >
                                     Change Item
                                 </Button>
@@ -433,10 +486,7 @@ export default function UploadForm() {
                                             color: '#7851A9'
                                         }
                                     }}
-                                    onClick={() => {
-                                        setPreviews(prev => { const copy = [...prev]; copy[2] = null; return copy; });
-                                        setSelectedItems(prev => { const copy = [...prev]; copy[2] = null; return copy; });
-                                    }}
+                                    onClick={() => clearFields(false, false, true, false)}
                                 >
                                     Change Item
                                 </Button>
@@ -534,10 +584,7 @@ export default function UploadForm() {
                                             color: '#7851A9'
                                         }
                                     }}
-                                    onClick={() => {
-                                        setPreviews(prev => { const copy = [...prev]; copy[3] = null; return copy; });
-                                        setSelectedItems(prev => { const copy = [...prev]; copy[3] = null; return copy; });
-                                    }}
+                                    onClick={() => clearFields(false, false, false, true)}
                                 >
                                     Change Item
                                 </Button>
@@ -578,10 +625,7 @@ export default function UploadForm() {
                 <Button
                     variant="contained"
                     sx = {{ marginLeft: 2 }}
-                    onClick={() => {
-                        setPreviews(prev => { const copy = [...prev]; copy[0] = null;copy[1] = null;copy[2] = null; copy[3] = null; return copy; });
-                        setSelectedItems(prev => { const copy = [...prev]; copy[0] = null;copy[1] = null;copy[2] = null; copy[3] = null; return copy; });
-                    }}
+                    onClick={() => clearFields(true, true, true, true)}
                 >
                     Clear All
                 </Button>

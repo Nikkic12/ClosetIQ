@@ -9,7 +9,6 @@ import connectDB from "./config/mongodb.js";
 import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
-import outfitRoutes from "./routes/outfitRoutes.js";
 import { errorHandler } from "./middleware/error.js";
 
 const app = express();
@@ -29,7 +28,6 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/upload", uploadRoutes);
-//app.use("/api/outfit", outfitRoutes);
 
 app.use(errorHandler); // use middleware
 
