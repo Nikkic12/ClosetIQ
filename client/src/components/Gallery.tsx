@@ -226,7 +226,8 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
 
     return (
         <Container>
-            {!props.outfits && (
+            {/* display catalogue */}
+            {!props.user && !props.outfits && (
                 <>
                     <RowsPhotoAlbum
                         photos={photos}
@@ -258,6 +259,37 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                                 "close",
                                 
                             ],
+                        }}
+                        styles={{
+                            container: { backgroundColor: "rgba(0, 0, 0, 0.9)" },
+                            slide: { maxWidth: "90%", maxHeight: "90%" }
+                        }}
+
+                    />
+
+                </>
+            )}
+
+            {/* display user uploads */}
+            {props.user && !props.outfits && (
+                <>
+                    <RowsPhotoAlbum
+                        photos={photos}
+                        targetRowHeight={150}
+                        onClick={({ index }) => setIndex(index)}
+                    />
+
+                    <Lightbox
+                        slides={photos}
+                        open={index >= 0}
+                        index={index}
+                        close={() => setIndex(-1)}
+                        plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+                        carousel={{
+                            finite: true,
+                            imageFit: "contain",
+                            spacing: 0,
+
                         }}
                         styles={{
                             container: { backgroundColor: "rgba(0, 0, 0, 0.9)" },
