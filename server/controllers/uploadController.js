@@ -75,6 +75,53 @@ export const createUpload = async (req, res, next) => {
     }
 }
 
+export const UploadFromCatalogue = async (req, res, next) => {
+    const {objectId} = req.body;
+
+    // validate all required fields
+    // if (!imgUrl || !primaryType || !secondaryType || !occasion || !color || !gender) {
+    //     res.status(400);
+    //     return next(new Error("All fields are required: imgUrl, primaryType, secondaryType, occasion, color, gender"));
+    // }
+
+    // expect userAuth middleware to have populated req.body.userId
+    const userId = req.body.userId;
+    if (!userId) {
+        res.status(401);
+        return next(new Error("Not authenticated"));
+    }
+
+    // get user data and name
+    const user = await userModel.findById(userId).select("name");
+    const uploaderName = user ? user.name : "Unknown";
+    const data = await catalogueModel.findById(objectId);
+
+        try {
+            // create upload with all clothing details
+            const upload = await uploadModel.create({
+                imgUrl: data.imgUrl,
+                user: userId,
+                uploaderName: uploaderName,
+                primaryType: data.primaryType,
+                secondaryType: data.secondaryType,
+                occasion: data.occasion,
+                color: data.color,
+                gender: data.gender
+            });
+
+            res.status(201).json({
+                success: true,
+                upload
+            });
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500);
+            next(error);
+        }
+    }
+
+
 export const createOutfit = async (req, res, next) => {
     const { top, bottom, hat, shoes } = req.body;
 
