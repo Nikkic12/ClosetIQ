@@ -1,5 +1,8 @@
 import * as React from 'react';
 import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import { toast } from 'react-toastify';
+
 
 
 import { RowsPhotoAlbum } from "react-photo-album"; // npm install yet-another-react-lightbox/plugins
@@ -16,6 +19,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 
+
 type photoItem = {
     src: string,
     id: string,
@@ -28,6 +32,8 @@ type photoItem = {
     height: number
 };
 
+
+
 export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
     const [index, setIndex] = React.useState(-1);
     const [openLightbox, setOpenLightbox] = useState<{ outfitIndex: number; photoIndex: number } | null>(null);
@@ -36,6 +42,25 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
     const [outfits, setOutfits] = useState<photoItem[][]>([]);
 
     const { userData, backendUrl } = React.useContext(AppContext);
+
+    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+
+        try {
+           
+            await axios.post(backendUrl + "/api/upload/uploadFromCatalogue", {
+                objectId: photos[index].id
+            }, {
+                withCredentials: true
+            });
+
+            console.log("File upload success with clothing details!");
+            toast.success("Upload successful!");
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
 
     useEffect(() => {
         const fetchPhotos = async () => {
@@ -221,11 +246,26 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                             spacing: 0,
 
                         }}
+                        toolbar={{
+                            buttons: [
+                                <Button key="my-button" onClick={handleSubmit} type="button" className="yarl__button" sx={{
+                                    background: '#7851A9',
+                                    backgroundImage: 'none',
+                                    color: '#fff',
+                                }}>
+                                    Add To Closet 
+                                </Button>,
+                                "close",
+                                
+                            ],
+                        }}
                         styles={{
                             container: { backgroundColor: "rgba(0, 0, 0, 0.9)" },
                             slide: { maxWidth: "90%", maxHeight: "90%" }
                         }}
+
                     />
+
                 </>
             )}
 
