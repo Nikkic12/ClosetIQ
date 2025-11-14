@@ -6,11 +6,11 @@ const outfitSchema = new mongoose.Schema(
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
         uploaderName: { type: String, required: true },
 
-        // clothing items
-        top: {type: mongoose.Schema.Types.ObjectId, ref: 'upload', required: true},
-        bottom: {type: mongoose.Schema.Types.ObjectId, ref: 'upload', required: true},
-        hat: {type: mongoose.Schema.Types.ObjectId, ref: 'upload', required: true},
-        shoes: {type: mongoose.Schema.Types.ObjectId, ref: 'upload', required: true}
+        // clothing items, require false since they are not all option (some may be null)
+        top: {type: mongoose.Schema.Types.ObjectId, ref: 'upload', required: false},
+        bottom: {type: mongoose.Schema.Types.ObjectId, ref: 'upload', required: false},
+        hat: {type: mongoose.Schema.Types.ObjectId, ref: 'upload', required: false},
+        shoes: {type: mongoose.Schema.Types.ObjectId, ref: 'upload', required: false}
     }
 );
 
