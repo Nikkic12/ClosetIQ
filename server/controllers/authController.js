@@ -1,37 +1,48 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { v2 as cloudinary } from "cloudinary";
 
 import userModel from "../models/userModel.js";
+import uploadModel from "../models/uploadModel.js";
+import outfitModel from "../models/outfitModel.js";
+import catalogueModel from "../models/catalogueModel.js";
 import transporter from "../config/nodeMailer.js";
 import { WELCOME_TEMPLATE, EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from "../config/emailTemplate.js";
 
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 export const register = async (req, res) => {
     // need all 3 (name, email, password) to register
-    const {name, email, password} = req.body;
+    const { name, email, password } = req.body;
 
     // if a field is blank, send alert
-    if(!name || !email || !password) {
-        return res.json({success: false, message: "Missing details"});
+    if (!name || !email || !password) {
+        return res.json({ success: false, message: "Missing details" });
     }
 
     try {
         // if this variables it true, the email already exists in the database
-        const existingUser = await userModel.findOne({email});
-        if(existingUser) {
-            return res.json({success: false, message: "User already exists"});
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
+            return res.json({ success: false, message: "User already exists" });
         }
-        
+
         // generate encrypted password to store in database
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // create a user
-        const user = new userModel({name, email, password: hashedPassword});
-    
+        const user = new userModel({ name, email, password: hashedPassword });
+
         // save the user in MongoDB
         await user.save();
-        
+
         // whenever a new user is made, generate an id for that user, and keep them logged in
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "7d"});
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -51,37 +62,37 @@ export const register = async (req, res) => {
         await transporter.sendMail(mailOptions); // send an email with the above listed options
 
         // user is successfully registered
-        return res.json({success: true});
+        return res.json({ success: true });
     }
-    catch(error) {
-        res.json({success: false, message: error.message});
+    catch (error) {
+        res.json({ success: false, message: error.message });
     }
 }
 
 export const login = async (req, res) => {
     // need only email and password to register
-    const {email, password} = req.body;
+    const { email, password } = req.body;
 
     // if a field is blank, send alert
-    if(!email || !password) {
-        return res.json({success: false, message: "Email and password are required"});
+    if (!email || !password) {
+        return res.json({ success: false, message: "Email and password are required" });
     }
 
     try {
         // find a user with this email id
-        const user = await userModel.findOne({email});
-        if(!user) {
-            return res.json({success: false, message: "Invalid email"});
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: "Invalid email" });
         }
 
         // check if the inputted password matches the password associated with the email
         const isMatch = await bcrypt.compare(password, user.password);
-        if(!isMatch) {
-            return res.json({success: false, message: "Invalid password"});
+        if (!isMatch) {
+            return res.json({ success: false, message: "Invalid password" });
         }
 
         // same cookie code as in register above
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "7d"});
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -90,15 +101,15 @@ export const login = async (req, res) => {
         })
 
         // user is sucessfully logged in
-        return res.json({success: true});
+        return res.json({ success: true });
     }
-    catch(error) {
-        res.json({success: false, message: error.message});
+    catch (error) {
+        res.json({ success: false, message: error.message });
     }
 }
 
 export const logout = async (req, res) => {
-    try{
+    try {
         // clear cookie, which said that the user was logged in
         res.clearCookie("token", {
             httpOnly: true,
@@ -107,22 +118,79 @@ export const logout = async (req, res) => {
         })
 
         // user is successfully logged out
-        return res.json({success: true, message: "Logged out"});
+        return res.json({ success: true, message: "Logged out" });
     }
-    catch(error) {
-        res.json({success: false, message: error.message});
+    catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+}
+
+export const deleteAccount = async (req, res) => {
+    try {
+        // get id of currently logged in user
+        const userId = req.body.userId;
+        if (!userId) {
+            return res.json({ success: false, message: "Not logged in" });
+        }
+
+        const userUploads = await uploadModel.find({ user: userId });
+
+        // get catalogue items to check which images should not be deleted from Cloudinary
+        const catalogueItems = await catalogueModel.find({});
+        const catalogueImgUrls = new Set(catalogueItems.map(item => item.imgUrl));
+
+        // delete the Cloudinary images for user uploads, but not catalogue images
+        for (const upload of userUploads) {
+            // only delete if this image is not in the catalogue
+            if (upload.imgUrl && !catalogueImgUrls.has(upload.imgUrl)) {
+                try {
+                    // cloudinary's URL pattern: .../upload/[version]/[public_id].[extension]
+                    const parts = upload.imgUrl.split('/upload/');
+                    if (parts.length < 2) 
+                        return null;
+                    
+                    // remove version prefix and file extension
+                    const publicId = parts[1].replace(/^v\d+\//, '').replace(/\.[^/.]+$/, ''); 
+
+                    if (publicId) {
+                        await cloudinary.uploader.destroy(publicId);
+                        console.log(`Deleted Cloudinary image: ${publicId}`);
+                    }
+                } 
+                catch (error) {
+                    console.error(error.message);
+                }
+            }
+        }
+
+        // delete all outfits, uploads, and the user document associated this with user
+        await outfitModel.deleteMany({ user: userId });
+        await uploadModel.deleteMany({ user: userId });
+        await userModel.findByIdAndDelete(userId);
+
+        // clear cookie to log out the user (same as logout function)
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
+        });
+
+        return res.json({ success: true, message: "Account deleted" });
+    }
+    catch (error) {
+        res.json({ success: false, message: error.message });
     }
 }
 
 // forgot password, send one-time password
 export const sendVerifyOtp = async (req, res) => {
     try {
-        const {userId} = req.body;
+        const { userId } = req.body;
         const user = await userModel.findById(userId);
 
         // check if account is already verified
-        if(user.isAccountVerified) {
-            return res.json({success: false, message: "Account already verified"});
+        if (user.isAccountVerified) {
+            return res.json({ success: false, message: "Account already verified" });
         }
 
         // create random 6 digit one-time password
@@ -143,32 +211,32 @@ export const sendVerifyOtp = async (req, res) => {
         }
         await transporter.sendMail(mailOption);
 
-        res.json({success: true, message: "Verification OTP sent to email"});
+        res.json({ success: true, message: "Verification OTP sent to email" });
     }
-    catch(error) {
-        res.json({success: false, message: error.message});
+    catch (error) {
+        res.json({ success: false, message: error.message });
     }
 }
 
 // email to verify account email after account creation
 export const verifyEmail = async (req, res) => {
-    const {userId, otp} = req.body;
-    
-    if(!userId || !otp) {
-        return res.json({success: false, message: "Missing details"});
+    const { userId, otp } = req.body;
+
+    if (!userId || !otp) {
+        return res.json({ success: false, message: "Missing details" });
     }
 
     try {
         const user = await userModel.findById(userId);
 
-        if(!user) {
-            return res.json({success: false, message: "User not found"});
+        if (!user) {
+            return res.json({ success: false, message: "User not found" });
         }
-        if(user.verifyOtp === "" || user.verifyOtp !== otp) {
-            return res.json({success: false, message: "Invalid OTP"});
+        if (user.verifyOtp === "" || user.verifyOtp !== otp) {
+            return res.json({ success: false, message: "Invalid OTP" });
         }
-        if(user.verifyOtpExpireAt < Date.now()) {
-            return res.json({success: false, message: "OTP expired"});
+        if (user.verifyOtpExpireAt < Date.now()) {
+            return res.json({ success: false, message: "OTP expired" });
         }
 
         // verify account, remove otp data
@@ -177,11 +245,11 @@ export const verifyEmail = async (req, res) => {
         user.verifyOtpExpireAt = 0;
 
         await user.save();
-        return res.json({success: true, message: "Email verified successfully"});
+        return res.json({ success: true, message: "Email verified successfully" });
 
     }
-    catch(error) {
-        res.json({success: false, message: error.message});
+    catch (error) {
+        res.json({ success: false, message: error.message });
     }
 }
 
@@ -189,26 +257,26 @@ export const verifyEmail = async (req, res) => {
 export const isAuthenticated = async (req, res) => {
     // executed after middleware, meaning the user is authenticated
     try {
-        return res.json({success: true});
+        return res.json({ success: true });
     }
-    catch(error) {
-        res.json({success: false, message: error.message});
+    catch (error) {
+        res.json({ success: false, message: error.message });
     }
 }
 
 // send password reset otp
 export const sendResetOtp = async (req, res) => {
-    const {email} = req.body;
-    if(!email) {
-        return res.json({success: false, message: "Email is required"});
+    const { email } = req.body;
+    if (!email) {
+        return res.json({ success: false, message: "Email is required" });
     }
 
     try {
-        const user = await userModel.findOne({email});
-        if(!user) {
-            return res.json({success: false, message: "User not found"});
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: "User not found" });
         }
-        
+
         // again, create random one-time password
         const otp = String(Math.floor(100000 + Math.random() * 900000));
 
@@ -227,32 +295,32 @@ export const sendResetOtp = async (req, res) => {
         }
         await transporter.sendMail(mailOption);
 
-        return res.json({success: true, message: "Password reset OTP sent to email"});
+        return res.json({ success: true, message: "Password reset OTP sent to email" });
     }
-    catch(error) {
-        res.json({success: false, message: error.message});
+    catch (error) {
+        res.json({ success: false, message: error.message });
     }
 }
 
 // email to verify account for resetting password
 export const verifyEmailResetPassword = async (req, res) => {
-    const {email, otp} = req.body;
-    
-    if(!email || !otp) {
-        return res.json({success: false, message: "Missing details"});
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        return res.json({ success: false, message: "Missing details" });
     }
 
     try {
-        const user = await userModel.findOne({email});
+        const user = await userModel.findOne({ email });
 
-        if(!user) {
-            return res.json({success: false, message: "User not found"});
+        if (!user) {
+            return res.json({ success: false, message: "User not found" });
         }
-        if(user.resetOtp === "" || user.resetOtp !== otp) {
-            return res.json({success: false, message: "Invalid OTP"});
+        if (user.resetOtp === "" || user.resetOtp !== otp) {
+            return res.json({ success: false, message: "Invalid OTP" });
         }
-        if(user.resetOtpExpireAt < Date.now()) {
-            return res.json({success: false, message: "OTP expired"});
+        if (user.resetOtpExpireAt < Date.now()) {
+            return res.json({ success: false, message: "OTP expired" });
         }
 
         // don't verify account bc this is for the reset password form
@@ -260,23 +328,23 @@ export const verifyEmailResetPassword = async (req, res) => {
         user.resetOtpExpireAt = 0;
 
         await user.save();
-        return res.json({success: true, message: "Email verified successfully for reset password"});
+        return res.json({ success: true, message: "Email verified successfully for reset password" });
     }
-    catch(error) {
-        res.json({success: false, message: error.message});
+    catch (error) {
+        res.json({ success: false, message: error.message });
     }
 }
 
 // reset user password
 export const resetPassword = async (req, res) => {
-    const {email, otp, newPassword} = req.body;
+    const { email, otp, newPassword } = req.body;
 
-    if(!email || !otp || !newPassword) {
-        return res.json({success: false, message: "Email, OTP, and new password are required"});
+    if (!email || !otp || !newPassword) {
+        return res.json({ success: false, message: "Email, OTP, and new password are required" });
     }
-    
+
     try {
-        const user = await userModel.findOne({email});
+        const user = await userModel.findOne({ email });
 
         // set new password into the existing user in the database
         const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -284,9 +352,9 @@ export const resetPassword = async (req, res) => {
 
         await user.save();
 
-        return res.json({success: true, message: "Password reset successfully"});
+        return res.json({ success: true, message: "Password reset successfully" });
     }
-    catch(error) {
-        res.json({success: false, message: error.message});
+    catch (error) {
+        res.json({ success: false, message: error.message });
     }
 }
