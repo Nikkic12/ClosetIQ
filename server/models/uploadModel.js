@@ -6,7 +6,6 @@ const uploadSchema = new mongoose.Schema(
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
         uploaderName: { type: String, required: true },
         imgUrl: { type: String, required: true },
-        cloudinaryId: { type: String, required: true },
 
         // clothing characteristics
         primaryType: {type: String, required: true},

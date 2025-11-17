@@ -6,10 +6,10 @@ import { v2 as cloudinary } from "cloudinary";
 
 
 export const createUpload = async (req, res, next) => {
-    const { imgUrl, cloudinaryId, primaryType, secondaryType, occasion, color, gender } = req.body;
+    const { imgUrl, primaryType, secondaryType, occasion, color, gender } = req.body;
 
     // validate all required fields
-    if (!imgUrl || !cloudinaryId || !primaryType || !secondaryType || !occasion || !color || !gender) {
+    if (!imgUrl || !primaryType || !secondaryType || !occasion || !color || !gender) {
         res.status(400);
         return next(new Error("All fields are required: imgUrl, primaryType, secondaryType, occasion, color, gender"));
     }
@@ -30,7 +30,6 @@ export const createUpload = async (req, res, next) => {
             // create upload with all clothing details
             const upload = await catalogueModel.create({
                 imgUrl,
-                cloudinaryId,
                 user: userId,
                 uploaderName,
                 primaryType,
@@ -56,7 +55,6 @@ export const createUpload = async (req, res, next) => {
             // create upload with all clothing details
             const upload = await uploadModel.create({
                 imgUrl,
-                cloudinaryId,
                 user: userId,
                 uploaderName,
                 primaryType,
@@ -104,7 +102,6 @@ export const UploadFromCatalogue = async (req, res, next) => {
             // create upload with all clothing details
             const upload = await uploadModel.create({
                 imgUrl: data.imgUrl,
-                cloudinaryId: data.cloudinaryId,
                 user: userId,
                 uploaderName: uploaderName,
                 primaryType: data.primaryType,
