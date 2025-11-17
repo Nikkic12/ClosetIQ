@@ -2,12 +2,14 @@ import uploadModel from "../models/uploadModel.js"
 import catalogueModel from "../models/catalogueModel.js";
 import outfitModel from "../models/outfitModel.js";
 import userModel from "../models/userModel.js";
+import { v2 as cloudinary } from "cloudinary";
+
 
 export const createUpload = async (req, res, next) => {
-    const { imgUrl, primaryType, secondaryType, occasion, color, gender } = req.body;
+    const { imgUrl, cloudinaryId, primaryType, secondaryType, occasion, color, gender } = req.body;
 
     // validate all required fields
-    if (!imgUrl || !primaryType || !secondaryType || !occasion || !color || !gender) {
+    if (!imgUrl || !cloudinaryId || !primaryType || !secondaryType || !occasion || !color || !gender) {
         res.status(400);
         return next(new Error("All fields are required: imgUrl, primaryType, secondaryType, occasion, color, gender"));
     }
@@ -28,6 +30,7 @@ export const createUpload = async (req, res, next) => {
             // create upload with all clothing details
             const upload = await catalogueModel.create({
                 imgUrl,
+                cloudinaryId,
                 user: userId,
                 uploaderName,
                 primaryType,
@@ -53,6 +56,7 @@ export const createUpload = async (req, res, next) => {
             // create upload with all clothing details
             const upload = await uploadModel.create({
                 imgUrl,
+                cloudinaryId,
                 user: userId,
                 uploaderName,
                 primaryType,
@@ -100,6 +104,7 @@ export const UploadFromCatalogue = async (req, res, next) => {
             // create upload with all clothing details
             const upload = await uploadModel.create({
                 imgUrl: data.imgUrl,
+                cloudinaryId: data.cloudinaryId,
                 user: userId,
                 uploaderName: uploaderName,
                 primaryType: data.primaryType,
@@ -121,6 +126,54 @@ export const UploadFromCatalogue = async (req, res, next) => {
         }
     }
 
+export const deletePhotoController = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ error: "No ID provided" });
+
+        // 1. Find the item in MongoDB
+        const item = await uploadModel.findById(id);
+        if (!item) return res.status(404).json({ error: "Item not found" });
+
+        // 2. Delete from Cloudinary
+        let publicIdToDelete = item.cloudinaryId;
+
+        // Fallback: If cloudinaryId is not set or not the correct public ID, 
+        // extract it from the full imgUrl, like you do in deleteAccount.
+        if (!publicIdToDelete || publicIdToDelete.includes('http')) {
+            // Get the public ID from the imgUrl
+            if (item.imgUrl) {
+                const parts = item.imgUrl.split('/upload/');
+                if (parts.length > 1) {
+                    // remove version prefix and file extension
+                    publicIdToDelete = parts[1].replace(/^v\d+\//, '').replace(/\.[^/.]+$/, ''); 
+                }
+            }
+        }
+
+        // 2. Delete from Cloudinary
+        if (publicIdToDelete) {
+            try {
+              await cloudinary.uploader.destroy(publicIdToDelete);
+              console.log(`Successfully deleted Cloudinary asset: ${publicIdToDelete}`);
+            } catch (cloudErr) {
+              console.error("Cloudinary deletion error for public ID:", publicIdToDelete, cloudErr);
+              // Log the error but proceed to delete from MongoDB
+            }
+        } else {
+            console.warn("No Cloudinary Public ID found for deletion.");
+        }
+
+        // 3. Delete from MongoDB
+        await uploadModel.findByIdAndDelete(id);
+
+        res.json({ success: true, message: "Photo deleted" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+    
 
 export const createOutfit = async (req, res, next) => {
     const { top, bottom, hat, shoes } = req.body;

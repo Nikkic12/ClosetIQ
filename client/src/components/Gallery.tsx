@@ -62,6 +62,33 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
         }
     }
 
+    const handleDelete = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    
+        if (index < 0) return;
+    
+        const photo = photos[index];
+    
+        try {
+            await axios.delete(
+                backendUrl + "/api/upload/deletePhoto/" + photo.id,
+                { withCredentials: true }
+            );
+    
+            toast.success("Item deleted!");
+    
+            // remove from UI
+            setPhotos(prev => prev.filter((_, i) => i !== index));
+    
+            setIndex(-1);
+        }
+        catch (error) {
+            console.error(error);
+            toast.error("Failed to delete item.");
+        }
+    };
+
+
     useEffect(() => {
         const fetchPhotos = async () => {
             try {
@@ -226,8 +253,7 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
 
     return (
         <Container>
-            {/* display catalogue */}
-            {!props.user && !props.outfits && (
+            {!props.outfits && (
                 <>
                     <RowsPhotoAlbum
                         photos={photos}
@@ -256,6 +282,15 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                                 }}>
                                     Add To Closet 
                                 </Button>,
+
+                                <Button key="delete-button" onClick={handleDelete} type="button" className="yarl__button" sx={{
+                                    background: '#7851A9',
+                                    backgroundImage: 'none',
+                                    marginLeft: '10px',
+                                    color: '#fff',
+                                }}>
+                                    Delete From Closet 
+                                </Button>,
                                 "close",
                                 
                             ],
@@ -267,36 +302,6 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
 
                     />
 
-                </>
-            )}
-
-            {/* display user uploads */}
-            {props.user && !props.outfits && (
-                <>
-                    <RowsPhotoAlbum
-                        photos={photos}
-                        targetRowHeight={150}
-                        onClick={({ index }) => setIndex(index)}
-                    />
-
-                    <Lightbox
-                        slides={photos}
-                        open={index >= 0}
-                        index={index}
-                        close={() => setIndex(-1)}
-                        plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-                        carousel={{
-                            finite: true,
-                            imageFit: "contain",
-                            spacing: 0,
-
-                        }}
-                        styles={{
-                            container: { backgroundColor: "rgba(0, 0, 0, 0.9)" },
-                            slide: { maxWidth: "90%", maxHeight: "90%" }
-                        }}
-
-                    />
 
                 </>
             )}
