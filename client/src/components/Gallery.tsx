@@ -253,7 +253,8 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
 
     return (
         <Container>
-            {!props.outfits && (
+             {/* display catalogue */}
+             {!props.user && !props.outfits && (
                 <>
                     <RowsPhotoAlbum
                         photos={photos}
@@ -282,17 +283,7 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                                 }}>
                                     Add To Closet 
                                 </Button>,
-
-                                <Button key="delete-button" onClick={handleDelete} type="button" className="yarl__button" sx={{
-                                    background: '#7851A9',
-                                    backgroundImage: 'none',
-                                    marginLeft: '10px',
-                                    color: '#fff',
-                                }}>
-                                    Delete From Closet 
-                                </Button>,
                                 "close",
-                                
                             ],
                         }}
                         styles={{
@@ -306,6 +297,52 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                 </>
             )}
 
+            {/* display user uploads */}
+            {props.user && !props.outfits && (
+                <>
+                    <RowsPhotoAlbum
+                        photos={photos}
+                        targetRowHeight={150}
+                        onClick={({ index }) => setIndex(index)}
+                    />
+
+                    <Lightbox
+                        slides={photos}
+                        open={index >= 0}
+                        index={index}
+                        close={() => setIndex(-1)}
+                        plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+                        carousel={{
+                            finite: true,
+                            imageFit: "contain",
+                            spacing: 0,
+
+                        }}
+                        toolbar={{
+                            buttons: [
+                                <Button key="delete-button" onClick={handleDelete} type="button" className="yarl__button" sx={{
+                                    background: '#7851A9',
+                                    backgroundImage: 'none',
+                                    marginLeft: '10px',
+                                    color: '#fff',
+                                }}>
+                                    Delete From Closet 
+                                </Button>,
+                                "close",
+
+                            ],
+                        }}
+               
+                        styles={{
+                            container: { backgroundColor: "rgba(0, 0, 0, 0.9)" },
+                            slide: { maxWidth: "90%", maxHeight: "90%" }
+                        }}
+
+                    />
+
+                </>
+            )}
+            
             {/* loop through outfits array and make a separate gallery for each outfit */}
             {props.outfits && outfits.map((outfit, i) => (
                 <React.Fragment key={i}>
