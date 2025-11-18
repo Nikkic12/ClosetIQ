@@ -40,7 +40,7 @@ type photoItem = {
     gender: string;
 };
 
-export default function OutfitForm() {
+export default function OutfitForm({ onOutfitCreated }: { onOutfitCreated?: () => void }) {
     const { userData } = React.useContext(AppContext);
     const backendUrl = "http://localhost:4000"; //import.meta.env.VITE_BACKEND_URL;
 
@@ -199,6 +199,11 @@ export default function OutfitForm() {
             clearFields(true, true, true, true); // clear all fields after outfit upload            
             toast.success("Outfit created successfully!");
             setLoading(false);
+            
+            // Trigger refresh of outfit gallery
+            if (onOutfitCreated) {
+                onOutfitCreated();
+            }
         }
         catch (error) {
             console.error(error);

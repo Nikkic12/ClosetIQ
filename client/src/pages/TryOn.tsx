@@ -11,6 +11,11 @@ import Gallery from '../components/Gallery';
 
 export default function TryOn(props: { disableCustomTheme?: boolean }) {
   const {userData} = React.useContext(AppContext);
+  const [refreshKey, setRefreshKey] = React.useState(0);
+
+  const handleOutfitCreated = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   return (
     <AppTheme {...props}>
@@ -26,10 +31,10 @@ export default function TryOn(props: { disableCustomTheme?: boolean }) {
         <p>Hello, {userData ? userData.name : "Guest"}, welcome to the Try-On page!</p>
 
         <h2>Make an Outfit:</h2>
-        <OutfitForm />
+        <OutfitForm onOutfitCreated={handleOutfitCreated} />
 
         <h2>Your Outfits:</h2>
-        <Gallery user={true} outfits={true} /> 
+        <Gallery user={true} outfits={true} key={refreshKey} /> 
 
       </Container>
 
