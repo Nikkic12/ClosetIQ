@@ -40,6 +40,7 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
 
     const [photos, setPhotos] = useState<photoItem[]>([]);
     const [outfits, setOutfits] = useState<photoItem[][]>([]);
+    const [outfitIds, setOutfitIds] = useState<string[]>([]); // Track outfit IDs
 
     const { userData, backendUrl } = React.useContext(AppContext);
 
@@ -56,6 +57,7 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
 
             console.log("File upload success with clothing details!");
             toast.success("Upload successful!");
+            setIndex(-1);
         }
         catch (error) {
             console.error(error);
@@ -70,9 +72,13 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
         const photo = photos[index];
     
         try {
-            await axios.delete(
+            // First attempt to delete without confirmation
+            const response = await axios.delete(
                 backendUrl + "/api/upload/deletePhoto/" + photo.id,
-                { withCredentials: true }
+                { 
+                    withCredentials: true,
+                    data: { deleteOutfits: false }
+                }
             );
     
             toast.success("Item deleted!");
@@ -82,9 +88,133 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
     
             setIndex(-1);
         }
+        catch (error: any) {
+            // Check if error is because item is in outfits
+            if (error.response && error.response.status === 409 && error.response.data.inOutfits) {
+                const outfitCount = error.response.data.outfitCount;
+                const message = error.response.data.message;
+                
+                // Show confirmation dialog
+                const confirmed = window.confirm(
+                    `${message}\n\nDo you want to proceed with deleting this item and all associated outfits?`
+                );
+                
+                if (confirmed) {
+                    try {
+                        // Delete with confirmation
+                        await axios.delete(
+                            backendUrl + "/api/upload/deletePhoto/" + photo.id,
+                            { 
+                                withCredentials: true,
+                                data: { deleteOutfits: true }
+                            }
+                        );
+                        
+                        toast.success(`Item and ${outfitCount} outfit(s) deleted!`);
+                        
+                        // remove from UI
+                        setPhotos(prev => prev.filter((_, i) => i !== index));
+                        setIndex(-1);
+                    }
+                    catch (deleteError) {
+                        console.error(deleteError);
+                        toast.error("Failed to delete item and outfits.");
+                    }
+                }
+            } else {
+                console.error(error);
+                toast.error("Failed to delete item.");
+            }
+        }
+    };
+
+    const handleDeleteOutfitItem = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    
+        if (!openLightbox || openLightbox.photoIndex < 0) return;
+    
+        const outfit = outfits[openLightbox.outfitIndex];
+        const photo = outfit[openLightbox.photoIndex];
+    
+        try {
+            // First attempt to delete without confirmation
+            const response = await axios.delete(
+                backendUrl + "/api/upload/deletePhoto/" + photo.id,
+                { 
+                    withCredentials: true,
+                    data: { deleteOutfits: false }
+                }
+            );
+    
+            toast.success("Item deleted!");
+    
+            // Refresh outfits to reflect changes
+            window.location.reload();
+        }
+        catch (error: any) {
+            // Check if error is because item is in outfits
+            if (error.response && error.response.status === 409 && error.response.data.inOutfits) {
+                const outfitCount = error.response.data.outfitCount;
+                const message = error.response.data.message;
+                
+                // Show confirmation dialog
+                const confirmed = window.confirm(
+                    `${message}\n\nDo you want to proceed with deleting this item and all associated outfits?`
+                );
+                
+                if (confirmed) {
+                    try {
+                        // Delete with confirmation
+                        await axios.delete(
+                            backendUrl + "/api/upload/deletePhoto/" + photo.id,
+                            { 
+                                withCredentials: true,
+                                data: { deleteOutfits: true }
+                            }
+                        );
+                        
+                        toast.success(`Item and ${outfitCount} outfit(s) deleted!`);
+                        
+                        // Refresh outfits to reflect changes
+                        window.location.reload();
+                    }
+                    catch (deleteError) {
+                        console.error(deleteError);
+                        toast.error("Failed to delete item and outfits.");
+                    }
+                }
+            } else {
+                console.error(error);
+                toast.error("Failed to delete item.");
+            }
+        }
+    };
+
+    const handleDeleteEntireOutfit = async (outfitIndex: number) => {
+        if (outfitIndex < 0 || outfitIndex >= outfitIds.length) return;
+
+        const outfitId = outfitIds[outfitIndex];
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this entire outfit? (Clothing items will remain in your closet)"
+        );
+
+        if (!confirmed) return;
+
+        try {
+            await axios.delete(
+                backendUrl + "/api/upload/deleteOutfit/" + outfitId,
+                { withCredentials: true }
+            );
+
+            toast.success("Outfit deleted! (Clothing items preserved)");
+
+            // Refresh to reflect changes
+            window.location.reload();
+        }
         catch (error) {
             console.error(error);
-            toast.error("Failed to delete item.");
+            toast.error("Failed to delete outfit.");
         }
     };
 
@@ -174,6 +304,10 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
 
                             return outfitItems;
                         });
+
+                        // Store outfit IDs
+                        const outfitIdList = userOutfits.map((outfit: any) => outfit._id || outfit.id);
+                        setOutfitIds(outfitIdList);
 
                         // set the outfits array here
                         setOutfits(formattedOutfits);
@@ -346,7 +480,20 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
             {/* loop through outfits array and make a separate gallery for each outfit */}
             {props.outfits && outfits.map((outfit, i) => (
                 <React.Fragment key={i}>
-                    <h3>Outfit #{i + 1}:</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <h3>Outfit #{i + 1}:</h3>
+                        <Button 
+                            onClick={() => handleDeleteEntireOutfit(i)} 
+                            variant="contained"
+                            sx={{
+                                background: '#B85042',
+                                '&:hover': { background: '#9a3f34' },
+                                marginBottom: '10px'
+                            }}
+                        >
+                            Delete Outfit
+                        </Button>
+                    </div>
 
                     <RowsPhotoAlbum
                         photos={outfit}
@@ -364,6 +511,19 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                             finite: true,
                             imageFit: "contain",
                             spacing: 0
+                        }}
+                        toolbar={{
+                            buttons: [
+                                <Button key="delete-outfit-item-button" onClick={handleDeleteOutfitItem} type="button" className="yarl__button" sx={{
+                                    background: '#7851A9',
+                                    backgroundImage: 'none',
+                                    marginLeft: '10px',
+                                    color: '#fff',
+                                }}>
+                                    Delete Item From Closet
+                                </Button>,
+                                "close",
+                            ],
                         }}
                         styles={{
                             container: { backgroundColor: "rgba(0, 0, 0, 0.9)" },
