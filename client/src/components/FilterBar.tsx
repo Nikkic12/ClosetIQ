@@ -37,10 +37,10 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
     const secondaryOptions = filters.primaryType && filters.primaryType !== '' ? secondaryMap[filters.primaryType] || [''] : [''];
 
     return (
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2, flexWrap: 'wrap', mt: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2, flexWrap: 'wrap' }}>
             <FormControl size="small" sx={{ minWidth: 120, 
                 // label
-                '& .MuiInputLabel-root': { color: '#ffffffff' }, // gray-500
+                '& .MuiInputLabel-root': { color: '#6A4799' }, // gray-500
                 '& .MuiInputLabel-root.Mui-focused': { color: '#5b84dcff' }, // gray-900
 
                 // outlined border
@@ -56,7 +56,7 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
                 },
                 // dropdown icon
                 '& .MuiSelect-icon': {
-                color: '#ffffffff',
+                color: '#6A4799',
                 },
             }}>
             <InputLabel id="primary-label">Type</InputLabel>
@@ -85,7 +85,7 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
 
             <FormControl size="small" sx={{ minWidth: 140, 
                 // label
-                '& .MuiInputLabel-root': { color: '#ffffffff' }, // gray-500
+                '& .MuiInputLabel-root': { color: '#6A4799' }, // gray-500
                 '& .MuiInputLabel-root.Mui-focused': { color: '#5b84dcff' }, // gray-900
 
                 // outlined border
@@ -101,7 +101,7 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
                 },
                 // dropdown icon
                 '& .MuiSelect-icon': {
-                color: '#ffffffff',
+                color: '#6A4799',
                 },
             }}>
             <InputLabel id="secondary-label">Subtype</InputLabel>
@@ -131,7 +131,7 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
 
             <FormControl size="small" sx={{ minWidth: 120, 
                 // label
-                '& .MuiInputLabel-root': { color: '#ffffffff' }, // gray-500
+                '& .MuiInputLabel-root': { color: '#6A4799' }, // gray-500
                 '& .MuiInputLabel-root.Mui-focused': { color: '#5b84dcff' }, // gray-900
 
                 // outlined border
@@ -147,7 +147,7 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
                 },
                 // dropdown icon
                 '& .MuiSelect-icon': {
-                color: '#ffffffff',
+                color: '#6A4799',
                 },
             }}>
             <InputLabel id="occasion-label">Occasion</InputLabel>
@@ -176,7 +176,7 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
 
             <FormControl size="small" sx={{ minWidth: 120,
                 // label
-                '& .MuiInputLabel-root': { color: '#ffffffff' }, // gray-500
+                '& .MuiInputLabel-root': { color: '#6A4799' }, // gray-500
                 '& .MuiInputLabel-root.Mui-focused': { color: '#5b84dcff' }, // gray-900
 
                 // outlined border
@@ -192,7 +192,7 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
                 },
                 // dropdown icon
                 '& .MuiSelect-icon': {
-                color: '#ffffffff',
+                color: '#6A4799',
             },}}>
             <InputLabel id="color-label">Color</InputLabel>
             <Select
@@ -220,7 +220,7 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
 
             <FormControl size="small" sx={{ minWidth: 120, 
                 // label
-                '& .MuiInputLabel-root': { color: '#ffffffff' }, // gray-500
+                '& .MuiInputLabel-root': { color: '#6A4799' }, // gray-500
                 '& .MuiInputLabel-root.Mui-focused': { color: '#5b84dcff' }, // gray-900
 
                 // outlined border
@@ -236,7 +236,7 @@ export default function FilterBar(props: { filters: any, setFilters: (f: any) =>
                 },
                 // dropdown icon
                 '& .MuiSelect-icon': {
-                color: '#ffffffff',
+                color: '#6A4799',
                 },
             }}>
             <InputLabel id="gender-label">Gender</InputLabel>
