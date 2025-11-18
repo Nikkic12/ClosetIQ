@@ -25,7 +25,7 @@ export default function TryOn(props: { disableCustomTheme?: boolean }) {
       <Container
         maxWidth="lg"
         component="main"
-        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 1.5 }}
       >
         <h1>Try-On</h1>
         <p>Hello, {userData ? userData.name : "Guest"}, welcome to the Try-On page!</p>

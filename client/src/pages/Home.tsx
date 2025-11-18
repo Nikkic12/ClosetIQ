@@ -38,8 +38,8 @@ export default function Home(props: { disableCustomTheme?: boolean }) {
         
         }}
         >
-        <h1>Home</h1>
-        <p>Hello, {userData ? userData.name : "Guest"}!</p>
+        {/* <h1>Home</h1>
+        <p>Hello, {userData ? userData.name : "Guest"}!</p> */}
         <MainContent />
       </Container>
 

@@ -34,7 +34,7 @@ type photoItem = {
 
 
 
-export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
+export default function Gallery(props: { user?: boolean, outfits?: boolean, filters?: any }) {
     const [index, setIndex] = React.useState(-1);
     const [openLightbox, setOpenLightbox] = useState<{ outfitIndex: number; photoIndex: number } | null>(null);
 
@@ -229,6 +229,14 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
     useEffect(() => {
         const fetchPhotos = async () => {
             try {
+                // Build query string from non-empty filter values
+                const params = new URLSearchParams();
+                if (props.filters) {
+                    Object.entries(props.filters).forEach(([key, value]) => {
+                        if (value !== undefined && value !== null && value !== '') params.append(key, String(value));
+                    });
+                }
+
                 // if user prop is true, fill the gallery with user photos
                 if (props.user) {
                     // if outfits prop is true, fill the gallery with outfit photos
@@ -318,18 +326,17 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
 
                         // set the outfits array here
                         setOutfits(formattedOutfits);
+                        return;
                     }
-
-                    console.log("Fetching user photos");
-
-                    const { data } = await axios.get(backendUrl + "/api/upload/getUserClothing");
-                    const items = data.items || data.data || data;
-
-                    console.log('User items:', items);
-
+                    // Fetch user uploads with filters
+                    const url = backendUrl + '/api/upload/user' + (params.toString() ? `?${params.toString()}` : '');
+                    console.log('Closet fetch URL:', url);
+                    const { data } = await axios.get(url, { withCredentials: true });
+                    console.log('Closet fetch response:', data);
+                    const items = data.uploads || data.items || data;
                     const formattedPhotos = (Array.isArray(items) ? items : []).map((item: any) => ({
-                        src: item.imgUrl, // already full Cloudinary URL
-                        id: item._id || item.id,     // prefer MongoDB _id, fallback to id
+                        src: item.imgUrl,
+                        id: item._id || item.id,
                         userID: item.user,
                         primaryType: item.primaryType,
                         secondaryType: item.secondaryType,
@@ -338,26 +345,17 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                         width: 800,
                         height: 600
                     }));
-
-                    // setPhotos(formattedPhotos);
-
-                    const userId = userData ? userData.userId : "testuserId";
-
-                    const UserformattedPhotos = formattedPhotos.filter(photo => photo.userID === userId);
-                    setPhotos(UserformattedPhotos);
-                }
-                else {
-                    // if no props given, default to catalogue photos
-                    console.log("Fetching catalogue photos");
-
-                    const { data } = await axios.get(backendUrl + "/api/upload/getCatalogueItems");
+                    setPhotos(formattedPhotos);
+                } else {
+                    // Fetch catalogue items with filters
+                    const url = backendUrl + '/api/upload/getCatalogueItems' + (params.toString() ? `?${params.toString()}` : '');
+                    console.log('Catalogue fetch URL:', url);
+                    const { data } = await axios.get(url);
+                    console.log('Catalogue fetch response:', data);
                     const items = data.items || data.data || data;
-
-                    console.log('Catalogue items:', items);
-
                     const formattedPhotos = (Array.isArray(items) ? items : []).map((item: any) => ({
-                        src: item.imgUrl, // already full Cloudinary URL
-                        id: item._id || item.id,     // prefer MongoDB _id, fallback to id
+                        src: item.imgUrl,
+                        id: item._id || item.id,
                         userID: item.user,
                         primaryType: item.primaryType,
                         secondaryType: item.secondaryType,
@@ -369,14 +367,10 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
 
                     setPhotos(formattedPhotos);
                 }
-            }
-            catch (error) {
-                // failed to fetch photos
+            } catch (error) {
                 console.error('Error fetching items:', error);
-
-                // fallback placeholder in case of API error
                 setPhotos([{
-                    src: 'src/assets/step2.png', // local placeholder image
+                    src: 'src/assets/step2.png',
                     id: 'error-placeholder',
                     userID: 'error-placeholder',
                     primaryType: 'error',
@@ -388,9 +382,8 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                 }]);
             }
         };
-
         fetchPhotos();
-    }, [props.user, props.outfits, backendUrl, userData]);
+    }, [props.user, props.outfits, props.filters, backendUrl, userData]);
 
     return (
         <Container>

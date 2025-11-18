@@ -7,28 +7,34 @@ import Footer from '../components/Footer';
 
 import { AppContext } from '../context/AppContext';
 import Gallery from '../components/Gallery';
+import FilterBar from '../components/FilterBar';
 
 export default function Catalogue(props: { disableCustomTheme?: boolean }) {
   const { userData } = React.useContext(AppContext);
+  const [filters, setFilters] = React.useState({
+    primaryType: '',
+    secondaryType: '',
+    occasion: '',
+    color: '',
+    gender: ''
+  });
 
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-
       <Navbar />
       <Container
         maxWidth="lg"
         component="main"
-        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 1.5, mb: 0 }}
       >
         <h1>Catalogue</h1>
         <p>Hello, {userData ? userData.name : "Guest"}, welcome to the Catalogue page!</p>
 
-        <h2>Browse the Catalogue:</h2>
-        <Gallery />
-
+ 
+        <FilterBar filters={filters} setFilters={setFilters} />
+        <Gallery filters={filters} />
       </Container>
-
       <Footer />
     </AppTheme>
   );
