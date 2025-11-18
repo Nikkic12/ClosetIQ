@@ -123,16 +123,78 @@ export const UploadFromCatalogue = async (req, res, next) => {
         }
     }
 
+export const checkItemInOutfits = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ error: "No ID provided" });
+
+        // Find outfits containing this item
+        const outfits = await outfitModel.find({
+            $or: [
+                { top: id },
+                { bottom: id },
+                { hat: id },
+                { shoes: id }
+            ]
+        });
+
+        res.json({ 
+            success: true, 
+            inOutfits: outfits.length > 0,
+            outfitCount: outfits.length,
+            outfits: outfits
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+
 export const deletePhotoController = async (req, res) => {
     try {
         const id = req.params.id;
+        const { deleteOutfits } = req.body; // flag to confirm outfit deletion
+        
         if (!id) return res.status(400).json({ error: "No ID provided" });
 
         // 1. Find the item in MongoDB
         const item = await uploadModel.findById(id);
         if (!item) return res.status(404).json({ error: "Item not found" });
 
-        // 2. Delete from Cloudinary
+        // 2. Check if item is in any outfits
+        const outfits = await outfitModel.find({
+            $or: [
+                { top: id },
+                { bottom: id },
+                { hat: id },
+                { shoes: id }
+            ]
+        });
+
+        // If item is in outfits and user hasn't confirmed deletion, return warning
+        if (outfits.length > 0 && !deleteOutfits) {
+            return res.status(409).json({ 
+                error: "Item is in outfits",
+                inOutfits: true,
+                outfitCount: outfits.length,
+                message: `This item is part of ${outfits.length} outfit(s). Deleting it will also delete the outfit(s).`
+            });
+        }
+
+        // 3. Delete outfits containing this item if confirmed
+        if (outfits.length > 0 && deleteOutfits) {
+            await outfitModel.deleteMany({
+                $or: [
+                    { top: id },
+                    { bottom: id },
+                    { hat: id },
+                    { shoes: id }
+                ]
+            });
+            console.log(`Deleted ${outfits.length} outfits containing item ${id}`);
+        }
+
+        // 4. Delete from Cloudinary
         let publicIdToDelete = item.cloudinaryId;
 
         // Fallback: If cloudinaryId is not set or not the correct public ID, 
@@ -148,7 +210,7 @@ export const deletePhotoController = async (req, res) => {
             }
         }
 
-        // 2. Delete from Cloudinary
+        // Delete from Cloudinary
         if (publicIdToDelete) {
             try {
               await cloudinary.uploader.destroy(publicIdToDelete);
@@ -161,10 +223,14 @@ export const deletePhotoController = async (req, res) => {
             console.warn("No Cloudinary Public ID found for deletion.");
         }
 
-        // 3. Delete from MongoDB
+        // 5. Delete from MongoDB
         await uploadModel.findByIdAndDelete(id);
 
-        res.json({ success: true, message: "Photo deleted" });
+        res.json({ 
+            success: true, 
+            message: "Photo deleted",
+            outfitsDeleted: outfits.length
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server error" });
@@ -214,6 +280,28 @@ export const createOutfit = async (req, res, next) => {
         next(error);
     }
 }
+
+export const deleteOutfit = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ error: "No outfit ID provided" });
+
+        // Find and delete the outfit (only the outfit, not the clothing items)
+        const outfit = await outfitModel.findById(id);
+        if (!outfit) return res.status(404).json({ error: "Outfit not found" });
+
+        // Delete only the outfit document from MongoDB
+        await outfitModel.findByIdAndDelete(id);
+
+        res.json({ 
+            success: true, 
+            message: "Outfit deleted (clothing items preserved)"
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+};
 
 export const getUploadsByUser = async (req, res, next) => {
     // expect userAuth middleware to have populated req.body.userId
