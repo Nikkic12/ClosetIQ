@@ -15,7 +15,7 @@ export const createUpload = async (req, res, next) => {
     }
 
     // expect userAuth middleware to have populated req.body.userId
-    const userId = req.body.userId;
+    const userId = req.userId || req.body.userId;
     if (!userId) {
         res.status(401);
         return next(new Error("Not authenticated"));
@@ -87,7 +87,7 @@ export const UploadFromCatalogue = async (req, res, next) => {
     // }
 
     // expect userAuth middleware to have populated req.body.userId
-    const userId = req.body.userId;
+    const userId = req.userId || req.body.userId;
     if (!userId) {
         res.status(401);
         return next(new Error("Not authenticated"));
@@ -248,7 +248,7 @@ export const createOutfit = async (req, res, next) => {
     }
 
     // expect userAuth middleware to have populated req.body.userId
-    const userId = req.body.userId;
+    const userId = req.userId || req.body.userId;
     if (!userId) {
         res.status(401);
         return next(new Error("Not authenticated"));
@@ -303,31 +303,59 @@ export const deleteOutfit = async (req, res) => {
     }
 };
 
-export const getUploadsByUser = async (req, res, next) => {
-    // expect userAuth middleware to have populated req.body.userId
+// build a query object from allowed filters
+function buildFilterFromQuery(queryParams) {
+  const allowed = ['primaryType', 'secondaryType', 'occasion', 'color', 'gender'];
+  const q = {};
+  allowed.forEach(key => {
+    const v = queryParams[key];
+    if (v && v !== 'all') {
+      // case-insensitive exact match
+      q[key] = { $regex: `^${v}$`, $options: 'i' };
+    }
+  });
+  return q;
+}
+
+// GET /api/upload/user (userAuth middleware should set req.body.userId)
+export const getUserUploadsFiltered = async (req, res, next) => {
+  try {
     const userId = req.body.userId;
     if (!userId) {
-        res.status(401);
-        return next(new Error("Not authenticated"));
+      res.status(401);
+      return next(new Error("Not authenticated"));
     }
-    try {
-        const uploads = await uploadModel.find({ user: userId });
+    const filters = buildFilterFromQuery(req.query);
+    const query = { user: userId, ...filters };
+    const uploads = await uploadModel.find(query).sort({ createdAt: -1 });
+    res.json({ success: true, uploads });
+  } catch (err) {
+    next(err);
+  }
+}
 
-        res.status(200).json({
-            success: true,
-            uploads
-        });
+export const getUploadsByUser = async (req, res, next) => {
+  try {
+    // expect userAuth middleware to have populated req.body.userId
+    const userId = req.userId || req.body.userId;
+    if (!userId) {
+      res.status(401);
+      return next(new Error("Not authenticated"));
     }
-    catch (error) {
-        console.log(error);
-        res.status(500);
-        next(error);
-    }
+    const filters = buildFilterFromQuery(req.query);
+    const query = { user: userId, ...filters };
+    const uploads = await uploadModel.find(query).sort({ createdAt: -1 });
+    res.json({ success: true, uploads });
+  } catch (err) {
+    next(err);
+  }
 }
 
 export const getCatalogueItems = async (req, res, next) => {
     try {
-        const items = await catalogueModel.find({});
+        // Build filter from query params (same as closet filtering)
+        const filters = buildFilterFromQuery(req.query);
+        const items = await catalogueModel.find(filters);
 
         res.status(200).json({
             success: true,

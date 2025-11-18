@@ -8,20 +8,26 @@ import Footer from '../components/Footer';
 import { AppContext } from '../context/AppContext';
 import UploadForm from '../components/UploadForm';
 import Gallery from '../components/Gallery';
+import FilterBar from '../components/FilterBar';
 
 export default function Closet(props: { disableCustomTheme?: boolean }) {
-
   const {userData} = React.useContext(AppContext);
+  const [filters, setFilters] = React.useState({
+    primaryType: '',
+    secondaryType: '',
+    occasion: '',
+    color: '',
+    gender: ''
+  });
 
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-
       <Navbar />
       <Container
         maxWidth="lg"
         component="main"
-        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 1.5 }}
       >
         <h1>Closet</h1>
         <p>Hello, {userData ? userData.name : "Guest"}, welcome to your Closet page!</p>
@@ -30,10 +36,9 @@ export default function Closet(props: { disableCustomTheme?: boolean }) {
         <UploadForm />
 
         <h2>Your Closet:</h2>
-        <Gallery user={true} />
-
+        <FilterBar filters={filters} setFilters={setFilters} />
+        <Gallery user={true} filters={filters} />
       </Container>
-
       <Footer />
     </AppTheme>
   );
