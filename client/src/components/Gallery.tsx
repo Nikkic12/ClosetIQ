@@ -112,14 +112,21 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean }) {
                         
                         toast.success(`Item and ${outfitCount} outfit(s) deleted!`);
                         
-                        // remove from UI
-                        setPhotos(prev => prev.filter((_, i) => i !== index));
+                        // Close lightbox first
                         setIndex(-1);
+                        
+                        // remove from UI after a small delay to ensure lightbox closes
+                        setTimeout(() => {
+                            setPhotos(prev => prev.filter((_, i) => i !== index));
+                        }, 100);
                     }
                     catch (deleteError) {
                         console.error(deleteError);
                         toast.error("Failed to delete item and outfits.");
                     }
+                } else {
+                    // User cancelled, close the lightbox
+                    setIndex(-1);
                 }
             } else {
                 console.error(error);
