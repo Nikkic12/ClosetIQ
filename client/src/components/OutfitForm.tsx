@@ -41,8 +41,7 @@ type photoItem = {
 };
 
 export default function OutfitForm({ onOutfitCreated }: { onOutfitCreated?: () => void }) {
-    const { userData } = React.useContext(AppContext);
-    const backendUrl = "http://localhost:4000"; //import.meta.env.VITE_BACKEND_URL;
+    const { userData, backendUrl } = React.useContext(AppContext);
 
     const [loading, setLoading] = React.useState(false);
     const [previews, setPreviews] = React.useState<Array<string | null>>([null, null, null, null]);

@@ -8,7 +8,7 @@ export const AppContextProvider = (props) => {
     // don't log out a user when they refresh the page
     axios.defaults.withCredentials = true;
 
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const backendUrl = "http://localhost:4000";
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState(false);
 

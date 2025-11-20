@@ -18,7 +18,7 @@ import Divider from '@mui/material/Divider';
 import { toast } from 'react-toastify';
 
 export default function UploadForm() {
-    const backendUrl = "http://localhost:4000"; //import.meta.env.VITE_BACKEND_URL;
+    const { backendUrl } = React.useContext(AppContext);
 
     const [primaryType, setPrimaryType] = React.useState('top');
     const [secondaryType, setSecondaryType] = React.useState('shortsleeves');
