@@ -370,7 +370,7 @@ export default function Gallery(props: { user?: boolean, outfits?: boolean, filt
             } catch (error) {
                 console.error('Error fetching items:', error);
                 setPhotos([{
-                    src: 'src/assets/step2.png',
+                    src: './public/favicon.png',
                     id: 'error-placeholder',
                     userID: 'error-placeholder',
                     primaryType: 'error',

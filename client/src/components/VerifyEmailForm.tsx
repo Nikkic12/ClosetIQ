@@ -177,7 +177,7 @@ export default function OtpForm() {
             <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
             <Card variant="outlined">
             <img 
-              src="/src/assets/closetiq_logo.png"
+              src="./public/closetiq_logo.png"
               alt="ClosetIQ Logo"
               style={{ width: 150, marginLeft: -6 }} //16 
             />

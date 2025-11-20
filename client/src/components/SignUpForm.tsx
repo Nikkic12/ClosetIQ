@@ -170,7 +170,7 @@ export default function SignUpForm() {
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
       <Card variant="outlined">
       <img 
-              src="/src/assets/closetiq_logo.png"
+              src="./public/closetiq_logo.png"
               alt="ClosetIQ Logo"
               style={{ width: 150, marginLeft: -5, marginRight: -1 }} //16 
             />

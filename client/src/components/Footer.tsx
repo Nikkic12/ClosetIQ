@@ -59,7 +59,7 @@ export default function Footer() {
           >
             <Box sx={{ width: { xs: '100%', sm: '60%' } }}>
             <img 
-              src="/src/assets/closetiq_logo.png"
+              src="./public/closetiq_logo.png"
               alt="ClosetIQ Logo"
               style={{ height: 45, marginLeft: -5 }} //16 
             />
