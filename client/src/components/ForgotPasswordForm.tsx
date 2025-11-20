@@ -254,7 +254,7 @@ export default function ForgotPasswordForm() {
             {!isEmailSent && (
                 <Card variant="outlined">
                     <img 
-                        src="/src/assets/closetiq_logo.png"
+                        src="./public/closetiq_logo.png"
                         alt="ClosetIQ Logo"
                         style={{ width: 150, marginLeft: -9, marginRight: -1 }} //16 
                         />
@@ -317,7 +317,7 @@ export default function ForgotPasswordForm() {
             {isEmailSent && !isOtpSubmitted && (
                 <Card variant="outlined">
                     <img 
-                        src="/src/assets/closetiq_logo.png"
+                        src="./public/closetiq_logo.png"
                         alt="ClosetIQ Logo"
                         style={{ height: 55, marginLeft: 5, marginRight: -1 }} //16 
                         />
@@ -439,7 +439,7 @@ export default function ForgotPasswordForm() {
             {isEmailSent && isOtpSubmitted && (
                 <Card variant="outlined">
                     <img 
-                        src="/src/assets/closetiq_logo.png"
+                        src="./public/closetiq_logo.png"
                         alt="ClosetIQ Logo"
                         style={{ height: 55, marginLeft: 5, marginRight: -1 }} //16 
                         />

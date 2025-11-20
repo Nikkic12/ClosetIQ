@@ -101,7 +101,7 @@ export default function Navbar() {
                 <StyledToolbar variant="dense" disableGutters>
                     <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
                         <img
-                            src="/src/assets/closetiq_logo.png"
+                            src="./public/closetiq_logo.png"
                             alt="ClosetIQ Logo"
                             style={{ height: 55, marginLeft: 5, marginRight: -1 }} //16 
                         />

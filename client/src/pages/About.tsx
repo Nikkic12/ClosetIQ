@@ -25,12 +25,6 @@ import StarIcon from "@mui/icons-material/Star";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-// Replace these imports with your actual asset paths
-import teamMember1 from "../assets/team1.jpg";
-import teamMember2 from "../assets/team2.jpg";
-import teamMember3 from "../assets/team3.jpg";
-import teamMember4 from "../assets/team4.jpg";
-
 type Props = { disableCustomTheme?: boolean };
 
 export default function About(props: Props) {
@@ -48,25 +42,25 @@ export default function About(props: Props) {
     {
       name: "Nikki Chen",
       role: "Product Owner",
-      image: teamMember1,
+      image: "https://res.cloudinary.com/dwuugri6p/image/upload/v1763605527/team1_y33s4y.jpg",
       bio: "Passionate about revolutionizing how we interact with our wardrobes through technology.",
     },
     {
       name: "Jaxon Kundrat",
       role: "Scrum Master",
-      image: teamMember2,
+      image: "https://res.cloudinary.com/dwuugri6p/image/upload/v1763605528/team2_xt9hi0.jpg",
       bio: "Building intelligent systems that make fashion accessible and sustainable for everyone.",
     },
     {
       name: "Tyler Tsarnas",
       role: "Developer",
-      image: teamMember3,
+      image: "https://res.cloudinary.com/dwuugri6p/image/upload/v1763605528/team3_pfnehn.jpg",
       bio: "Creating beautiful, intuitive experiences that make getting dressed a joy, not a chore.",
     },
     {
       name: "Alexus Ear",
       role: "Developer",
-      image: teamMember4,
+      image: "https://res.cloudinary.com/dwuugri6p/image/upload/v1763605529/team4_mbrtk8.jpg",
       bio: "Obsessed with user experience and making technology that truly serves people's needs.",
     },
   ];
@@ -162,14 +156,7 @@ export default function About(props: Props) {
 
   <Grid container spacing={4} justifyContent="center">
     {teamMembers.map((member, index) => (
-      <Grid
-        item
-        key={member.name}
-        xs={12}
-        sm={6}
-        lg={6} // 2 cards per row on medium+
-        component="div"
-      >
+      <Grid key={member.name}>
         <Grow in={mounted} timeout={900 + index * 120}>
           <Card
             elevation={4}
@@ -236,7 +223,7 @@ export default function About(props: Props) {
       { icon: AutorenewIcon, title: "Sustainability", text: "By helping you rediscover and maximize your existing wardrobe, we promote conscious consumption." },
       { icon: FavoriteIcon, title: "Empowerment", text: "Everyone deserves to feel confident in what they wear. We're here to empower your style journey." },
     ].map((value, index) => (
-      <Grid item key={value.title} xs={12} sm={6} md={4} component="div">
+      <Grid key={value.title}>
         <Grow in={mounted} timeout={1300 + index * 100}>
           <Card
             elevation={4}
