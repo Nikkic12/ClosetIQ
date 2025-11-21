@@ -42,6 +42,13 @@ export default function TryOn(props: { disableCustomTheme?: boolean }) {
   }
 
   const deleteAccount = async () => {
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data, including clothing items and outfits."
+    );
+
+    if (!confirmed) return;
+
     try {
       axios.defaults.withCredentials = true;
       const { data } = await axios.post(backendUrl + "/api/auth/deleteAccount");
