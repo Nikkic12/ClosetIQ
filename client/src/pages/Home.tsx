@@ -8,6 +8,7 @@ import Footer from '../components/Footer';
 
 import { AppContext } from '../context/AppContext';
 import { Box, useTheme } from '@mui/material';
+import DemoOutfitForm from '../components/DemoOutfitForm';
 
 
 export default function Home(props: { disableCustomTheme?: boolean }) {
@@ -19,8 +20,6 @@ export default function Home(props: { disableCustomTheme?: boolean }) {
       <CssBaseline enableColorScheme />
 
       <Navbar />
-
-      const theme = useTheme();
 
       <Box
         sx={{
@@ -37,10 +36,11 @@ export default function Home(props: { disableCustomTheme?: boolean }) {
         sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 
         
         }}
-        >
-        {/* <h1>Home</h1>
-        <p>Hello, {userData ? userData.name : "Guest"}!</p> */}
+      >
         <MainContent />
+
+        <DemoOutfitForm />
+        
       </Container>
 
       <Footer />
