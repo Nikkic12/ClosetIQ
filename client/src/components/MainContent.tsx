@@ -27,9 +27,6 @@ const cardData = [
     title: 'Revolutionizing fashion in the digital age',
     description:
       "Upload your own clothes or explore our stylish collection to build a digital wardrobe that’s all yours. Keep everything organized and at your fingertips anytime, anywhere!",
-    authors: [
-      { name: 'ClosetIQ Team', avatar: '/static/images/avatar/1.jpg' },
-    ],
   },
   {
     img: 'https://picsum.photos/800/450?random=2',
@@ -37,7 +34,6 @@ const cardData = [
     title: 'Innovative outfit creation features that saves you time',
     description:
       "Unleash your inner stylist! Swipe, mix, and match your pieces to create outfits you love—and save them so you’ll never run out of style inspiration.",
-    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/6.jpg' }],
   },
   {
     img: 'https://picsum.photos/800/450?random=3',
@@ -45,7 +41,6 @@ const cardData = [
     title: 'Easy outfit recommendations for any occasion',
     description:
       "Need a little fashion help? Our smart tagging system suggests perfect outfit combos for any occasion.",
-    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/7.jpg' }],
   },
   {
     img: 'https://picsum.photos/800/450?random=4',
@@ -53,7 +48,6 @@ const cardData = [
     title: "Our company's journey: goals and achievements",
     description:
       "Read more about our company and our contributors in our About Page.",
-    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/3.jpg' }],
   },
   {
     img: 'https://picsum.photos/800/450?random=45',
@@ -61,9 +55,6 @@ const cardData = [
     title: 'Pioneering sustainable engineering solutions',
     description:
       "Learn about our commitment to sustainability and the innovative engineering solutions we're implementing to create a greener future. Discover the impact of our eco-friendly initiatives.",
-    authors: [
-      { name: 'ClosetIQ Team', avatar: '/static/images/avatar/4.jpg' },
-    ],
   },
   {
     img: 'https://picsum.photos/800/450?random=6',
@@ -71,7 +62,6 @@ const cardData = [
     title: 'Secure and convenient access to your style world',
     description:
       'Keep your closet and favorite outfits safe with a personal account. Log in anytime, anywhere.',
-    authors: [{ name: 'ClosetIQ Team', avatar: '/static/images/avatar/2.jpg' }],
   }
 ];
 
@@ -111,30 +101,6 @@ const StyledTypography = styled(Typography)({
   textOverflow: 'ellipsis',
 });
 
-function Author({ authors }: { authors: { name: string; avatar: string }[] }) {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 2,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '16px',
-      }}
-    >
-      <Box
-        sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}
-      >
-        <CheckroomIcon fontSize="small" color="primary" />
-        <Typography variant="caption">
-          {authors.map((author) => author.name).join(', ')}
-        </Typography>
-      </Box>
-    </Box>
-  );
-}
-
 export function Search() {
   return (
     <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
@@ -165,7 +131,6 @@ export default function MainContent() {
     return () => window.clearTimeout(t);
   }, []);
 
-
   const [focusedCardIndex, setFocusedCardIndex] = React.useState<number | null>(
     null,
   );
@@ -190,7 +155,6 @@ export default function MainContent() {
       display: 'flex', flexDirection: 'column', gap: 4,
       minHeight: "100vh",
       background: `linear-gradient(180deg, ${theme.palette.background.default} 0%, ${theme.palette.primary.light}14 55%)`,
-      pb: 8,
       mt: 6,
     }}
     >
@@ -217,65 +181,6 @@ export default function MainContent() {
         <IconButton size="small" aria-label="RSS feed">
           <RssFeedRoundedIcon />
         </IconButton>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column-reverse', md: 'row' },
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: { xs: 'start', md: 'center' },
-          gap: 4,
-          overflow: 'auto',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'inline-flex',
-            flexDirection: 'row',
-            gap: 3,
-            overflow: 'auto',
-          }}
-        >
-          {/* <Chip onClick={handleClick} size="medium" label="All categories" />
-          <Chip
-            onClick={handleClick}
-            size="medium"
-            label="Virtual Closet"
-            sx={{
-              backgroundColor: 'transparent',
-              border: 'none',
-            }}
-          />
-          <Chip
-            onClick={handleClick}
-            size="medium"
-            label="Outfit Recommendations"
-            sx={{
-              backgroundColor: 'transparent',
-              border: 'none',
-            }}
-          />
-          <Chip
-            onClick={handleClick}
-            size="medium"
-            label="Outfit Creator"
-            sx={{
-              backgroundColor: 'transparent',
-              border: 'none',
-            }}
-          />
-          <Chip
-            onClick={handleClick}
-            size="medium"
-            label="Pesonalized Account"
-            sx={{
-              backgroundColor: 'transparent',
-              border: 'none',
-            }}
-          /> */}
-        </Box>
-
       </Box>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -307,7 +212,6 @@ export default function MainContent() {
                 {cardData[0].description}
               </StyledTypography>
             </StyledCardContent>
-            <Author authors={cardData[0].authors} />
           </StyledCard>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -339,7 +243,6 @@ export default function MainContent() {
                 {cardData[1].description}
               </StyledTypography>
             </StyledCardContent>
-            <Author authors={cardData[1].authors} />
           </StyledCard>
         </Grid>
 
@@ -374,7 +277,6 @@ export default function MainContent() {
                 {cardData[2].description}
               </StyledTypography>
             </StyledCardContent>
-            <Author authors={cardData[2].authors} />
           </StyledCard>
         </Grid>
 
@@ -407,7 +309,6 @@ export default function MainContent() {
                 {cardData[3].description}
               </StyledTypography>
             </StyledCardContent>
-            <Author authors={cardData[3].authors} />
           </StyledCard>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
@@ -439,7 +340,6 @@ export default function MainContent() {
                 {cardData[5].description}
               </StyledTypography>
             </StyledCardContent>
-            <Author authors={cardData[5].authors} />
           </StyledCard>
         </Grid>
 
