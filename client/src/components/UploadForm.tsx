@@ -123,6 +123,9 @@ export default function UploadForm() {
             console.log("File upload success with clothing details!");
             setLoading(false);
             toast.success("Upload successful!");
+
+            window.location.reload();
+
         }
         catch (error) {
             console.error(error);
@@ -144,7 +147,11 @@ export default function UploadForm() {
                 onDrop={handleDrop}
                 sx={{
                     border: '5px dashed #ffffffff',
-                    padding: 5,
+                    padding: 4,
+                    paddingTop: 0,
+                    paddingBottom: 0,
+                    marginTop: 0,
+                    marginBottom: 0,
                     textAlign: 'center',
                     cursor: 'pointer',
                     backgroundColor: "transparent",
@@ -162,7 +169,7 @@ export default function UploadForm() {
                     />
 
                     <label htmlFor="raised-button-file">
-                        <Box display="flex" flexDirection="column" alignItems="center">
+                        <Box display="flex" flexDirection="column" alignItems="center"padding={4}>
                             <IconButton
                                 sx={{
                                     color: "transparent",
@@ -175,27 +182,11 @@ export default function UploadForm() {
                             >
                                 <CloudUpload sx={{ fontSize: 80, color: "white" }} />
                             </IconButton>
-                            <Typography sx={{ color: "#ffffff", padding: 2 }}>
+                            <Typography sx={{ color: "#ffffff", padding: 2, paddingBottom: 0 }}>
                                 Drag and drop files here or click to select files
                             </Typography>
                         </Box>
                     </label>
-
-                    <Button
-                        variant="outlined"
-                        loading={loading}
-                        type='submit'
-                        sx={{
-                            backgroundColor: '#ffffff',
-                            color: '#7851A9',
-                            '&:hover': {
-                                backgroundColor: '#f5f5f5',  // slightly darker white on hover
-                                color: '#7851A9'
-                            }
-                        }}
-                    >
-                        Upload
-                    </Button>
                 </form>
             </Paper>
 
@@ -301,11 +292,36 @@ export default function UploadForm() {
                                     <FormControlLabel value="mens" control={<Radio />} label="Mens" />
                                     <FormControlLabel value="womens" control={<Radio />} label="Womens" />
                                 </RadioGroup>
+
+                                <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center', // center horizontally
+                                    gap: 2,                   // space between buttons
+                                    mt: 3                     // margin-top for breathing room
+                                }}
+                                >
+                                    <Button
+                                        loading={loading}
+                                        type='submit'
+                                        sx={{
+                                            backgroundColor: '#0e0909ff',
+                                            color: '#faf9fbff',
+                                            '&:hover': {
+                                                backgroundColor: '#f5f5f5',  // slightly darker white on hover
+                                                color: '#7851A9'
+                                            }
+                                        }}
+                                    >
+                                        Upload
+                                    </Button>
+                                </Box>
                             </form>
 
                         </Grid>
                     </Grid>
                 </Box>
+                
             )}
 
         </Box>
