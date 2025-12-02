@@ -22,28 +22,28 @@ import { Container, Fade, Grow } from '@mui/material';
 
 const cardData = [
   {
-    img: 'https://picsum.photos/800/450?random=1',
+    img: 'https://res.cloudinary.com/dwuugri6p/image/upload/v1764702553/Screenshot_2025-12-02_133454_z9szrg.png',
     tag: 'Virtual Closet',
     title: 'Revolutionizing fashion in the digital age',
     description:
       "Upload your own clothes or explore our stylish collection to build a digital wardrobe that’s all yours. Keep everything organized and at your fingertips anytime, anywhere!",
   },
   {
-    img: 'https://picsum.photos/800/450?random=2',
+    img: 'https://res.cloudinary.com/dwuugri6p/image/upload/v1764702202/Screenshot_2025-12-02_140312_oygqmh.png',
     tag: 'Outfit Creator',
     title: 'Innovative outfit creation features that saves you time',
     description:
       "Unleash your inner stylist! Swipe, mix, and match your pieces to create outfits you love—and save them so you’ll never run out of style inspiration.",
   },
   {
-    img: 'https://picsum.photos/800/450?random=3',
-    tag: 'Outfit Recommendations',
-    title: 'Easy outfit recommendations for any occasion',
+    img: 'https://res.cloudinary.com/dwuugri6p/image/upload/v1764702051/Screenshot_2025-12-02_140043_eqknvq.png',
+    tag: 'Outfit Searching',
+    title: 'Easy outfit filters',
     description:
-      "Need a little fashion help? Our smart tagging system suggests perfect outfit combos for any occasion.",
+      "Need a little fashion help? Our smart tagging system filters perfect outfit combos for any occassion.",
   },
   {
-    img: 'https://picsum.photos/800/450?random=4',
+    img: 'https://res.cloudinary.com/dwuugri6p/image/upload/v1764702857/favicon_oqjboj_yndrky.png',
     tag: 'About Closet IQ',
     title: "Our company's journey: goals and achievements",
     description:
@@ -57,7 +57,7 @@ const cardData = [
       "Learn about our commitment to sustainability and the innovative engineering solutions we're implementing to create a greener future. Discover the impact of our eco-friendly initiatives.",
   },
   {
-    img: 'https://picsum.photos/800/450?random=6',
+    img: 'https://res.cloudinary.com/dwuugri6p/image/upload/v1764701918/Screenshot_2025-12-02_135808_ekytmh.png',
     tag: 'Personalized Account',
     title: 'Secure and convenient access to your style world',
     description:
